@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": [
+          "es2016",
+          "dom"
+        ],
+        "module": "es2015",
+        "target": "es5",
+        "noImplicitAny": false,
+        "outDir": "../dist"
+    },
+    "lib": [
+      "es2016",
+      "dom"
+    ]
+}
