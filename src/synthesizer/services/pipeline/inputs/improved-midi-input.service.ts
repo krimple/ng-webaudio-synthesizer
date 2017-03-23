@@ -20,6 +20,7 @@ export class ImprovedMidiInputService {
     { key: 'name', value: 'KMC MultiPad', type: 'percussion'},
     { key: 'name', value: 'Adafruit Bluefruit LE Bluetooth', type: 'midi'},
     { key: 'name', value: 'iRig KEYS 25', type: 'midi' },
+    { key: 'name', value: 'iRig KEYS 25 MIDI 1', type: 'midi' },
     { key: 'id', value: '167603758', type: 'percussion' },
     { key: 'name', value: 'Touch Board     ', type: 'midi' },
     { key: 'id', value: '-1614721547', type: 'percussion'}, // MIDI Kat pad
