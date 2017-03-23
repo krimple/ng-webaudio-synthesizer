@@ -1,0 +1,9 @@
+export { NoteTranslationService } from './services/pipeline/processors/note-translation.service';
+export { QuantizerService } from './services/pipeline/processors/quantizer.service';
+export { SequencerService } from './services/pipeline/processors/sequencer.service';
+export { AudioOutputService } from './services/pipeline/outputs/audio-output.service';
+export { DrumPCMTriggeringService } from './services/pipeline/synthesis/drum-pcm-triggering.service';
+export { SynthesisService } from './services/pipeline/synthesis/synthesis.service';
+export { PipelineService } from './services/pipeline/pipeline.service';
+export { ImprovedMidiInputService } from './services/pipeline/inputs/improved-midi-input.service';
+export { SynthesizerModule } from './synthesizer.module';

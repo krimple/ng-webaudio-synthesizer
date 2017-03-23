@@ -1,21 +1,25 @@
 {
-    "compilerOptions": {
-        "sourceMap": true,
-        "declaration": true,
-        "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "lib": [
-          "es2016",
-          "dom"
-        ],
-        "module": "es2015",
-        "target": "es5",
-        "noImplicitAny": false,
-        "outDir": "../dist"
-    },
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "preserveConstEnums": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "target": "es5",
+    "rootDir": "",
+    "outDir": "../dist",
     "lib": [
       "es2016",
       "dom"
     ]
+  },
+  "filesGlob": [
+    "./**/*.ts",
+    "!./node_modules/**/*.ts",
+    "!./spec/**/*.ts"
+  ]
 }
