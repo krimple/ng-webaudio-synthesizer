@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ken Rimple",
-  "license": "ISC",
+  "license": "Apache",
   "repository": "https://github.com/krimple/ng-webaudio-synthesizer",
   "dependencies": {
     "@angular/common": "^2.4.10",
