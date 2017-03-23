@@ -1,6 +1,6 @@
 {
   "name": "ng-webaudio-synthesizer",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A web synthesizer for Angular, based on RxJS",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,7 @@
   },
   "author": "Ken Rimple",
   "license": "ISC",
+  "repository": "https://github.com/krimple/ng-webaudio-synthesizer",
   "dependencies": {
     "@angular/common": "^2.4.10",
     "@angular/core": "^2.4.10",
