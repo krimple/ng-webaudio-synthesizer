@@ -1,7 +1,7 @@
 {
   "name": "ng-webaudio-synthesizer",
   "module": "index.js",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A web synthesizer for Angular, based on RxJS",
   "main": "index.js",
   "scripts": {
