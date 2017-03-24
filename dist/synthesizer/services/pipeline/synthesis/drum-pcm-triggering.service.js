@@ -8,10 +8,11 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var http_1 = require('@angular/http');
-var models_1 = require('../../../models');
-var rxjs_1 = require('rxjs');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var http_1 = require("@angular/http");
+var models_1 = require("../../../models");
+var rxjs_1 = require("rxjs");
 var DrumPCMTriggeringService = (function () {
     function DrumPCMTriggeringService(http) {
         this.http = http;
@@ -113,12 +114,11 @@ var DrumPCMTriggeringService = (function () {
             });
         });
     };
-    DrumPCMTriggeringService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof http_1.Http !== 'undefined' && http_1.Http) === 'function' && _a) || Object])
-    ], DrumPCMTriggeringService);
     return DrumPCMTriggeringService;
-    var _a;
 }());
+DrumPCMTriggeringService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [http_1.Http])
+], DrumPCMTriggeringService);
 exports.DrumPCMTriggeringService = DrumPCMTriggeringService;
 //# sourceMappingURL=drum-pcm-triggering.service.js.map

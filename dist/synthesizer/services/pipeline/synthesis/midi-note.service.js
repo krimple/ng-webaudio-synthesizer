@@ -8,8 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var rxjs_1 = require('rxjs');
-var core_1 = require('@angular/core');
+Object.defineProperty(exports, "__esModule", { value: true });
+var rxjs_1 = require("rxjs");
+var core_1 = require("@angular/core");
 var MidiNoteService = (function () {
     function MidiNoteService() {
     }
@@ -83,12 +84,12 @@ var MidiNoteService = (function () {
             note.noteOff();
         }
     };
-    MidiNoteService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], MidiNoteService);
     return MidiNoteService;
 }());
+MidiNoteService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [])
+], MidiNoteService);
 exports.MidiNoteService = MidiNoteService;
 var Note = (function () {
     function Note(noteValues, frequency) {
@@ -136,9 +137,9 @@ var Note = (function () {
         console.log("Stopping note " + this.noteValues + "/" + this.frequency);
         this.stopWatcher$.next(Note.context.currentTime + 0.5);
     };
-    Note.waveform = 'sine';
     return Note;
 }());
+Note.waveform = 'sine';
 exports.Note = Note;
 var ToneWorker = (function () {
     function ToneWorker(oscillator, frequency, currentTime, outputBus, stopWatcher$) {

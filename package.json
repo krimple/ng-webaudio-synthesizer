@@ -1,13 +1,13 @@
 {
   "name": "ng-webaudio-synthesizer",
   "module": "index.js",
-  "version": "0.3.0",
+  "version": "0.4.1",
   "description": "A web synthesizer for Angular, based on RxJS",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "compile": "rimraf dist && tsc -p ./src/tsconfig.json",
-    "preinstall": "npm run compile",
+    "fo": "npm run compile",
     "build": "tsc -p tsconfig.json",
     "watch": "tsc --watch -p src/tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,7 +18,7 @@
   "dependencies": {
     "@angular/common": "^2.4.0",
     "@angular/core": "^2.4.0",
-    "@angular/http": "^2.4.0",
+    "@angular/http": "^2.4.10",
     "@angular/platform-browser": "^2.4.0",
     "core-js": "^2.4.1",
     "rxjs": "^5.2.0",

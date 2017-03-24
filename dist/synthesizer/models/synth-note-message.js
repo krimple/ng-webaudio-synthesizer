@@ -1,9 +1,15 @@
 "use strict";
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var SynthMessage = (function () {
     function SynthMessage(action) {
         this.action = action;
@@ -14,8 +20,9 @@ exports.SynthMessage = SynthMessage;
 var SynthNoteMessage = (function (_super) {
     __extends(SynthNoteMessage, _super);
     function SynthNoteMessage(note, action) {
-        _super.call(this, action);
-        this.note = note;
+        var _this = _super.call(this, action) || this;
+        _this.note = note;
+        return _this;
     }
     return SynthNoteMessage;
 }(SynthMessage));
@@ -23,7 +30,7 @@ exports.SynthNoteMessage = SynthNoteMessage;
 var SynthNoteOn = (function (_super) {
     __extends(SynthNoteOn, _super);
     function SynthNoteOn(note) {
-        _super.call(this, note, 'ON');
+        return _super.call(this, note, 'ON') || this;
     }
     return SynthNoteOn;
 }(SynthNoteMessage));
@@ -31,7 +38,7 @@ exports.SynthNoteOn = SynthNoteOn;
 var SynthNoteOff = (function (_super) {
     __extends(SynthNoteOff, _super);
     function SynthNoteOff(note) {
-        _super.call(this, note, 'OFF');
+        return _super.call(this, note, 'OFF') || this;
     }
     return SynthNoteOff;
 }(SynthNoteMessage));
@@ -39,9 +46,10 @@ exports.SynthNoteOff = SynthNoteOff;
 var TriggerSample = (function (_super) {
     __extends(TriggerSample, _super);
     function TriggerSample(instrument, velocity) {
-        _super.call(this, 'SAMPLE!');
-        this.instrument = instrument;
-        this.velocity = velocity;
+        var _this = _super.call(this, 'SAMPLE!') || this;
+        _this.instrument = instrument;
+        _this.velocity = velocity;
+        return _this;
     }
     return TriggerSample;
 }(SynthMessage));
@@ -49,7 +57,7 @@ exports.TriggerSample = TriggerSample;
 var ClockTick = (function (_super) {
     __extends(ClockTick, _super);
     function ClockTick() {
-        _super.call(this, 'TICK');
+        return _super.call(this, 'TICK') || this;
     }
     return ClockTick;
 }(SynthMessage));
@@ -57,7 +65,7 @@ exports.ClockTick = ClockTick;
 var SynthControlMessage = (function (_super) {
     __extends(SynthControlMessage, _super);
     function SynthControlMessage() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return SynthControlMessage;
 }(SynthMessage));
@@ -65,9 +73,10 @@ exports.SynthControlMessage = SynthControlMessage;
 var VolumeChange = (function (_super) {
     __extends(VolumeChange, _super);
     function VolumeChange(level) {
-        _super.call(this, 'VOLUME');
+        var _this = _super.call(this, 'VOLUME') || this;
         // hack due to arduino stupidity kenny
-        this.level = Math.min(level / 127.0);
+        _this.level = Math.min(level / 127.0);
+        return _this;
     }
     return VolumeChange;
 }(SynthControlMessage));
@@ -75,24 +84,25 @@ exports.VolumeChange = VolumeChange;
 var WaveformChange = (function (_super) {
     __extends(WaveformChange, _super);
     function WaveformChange(rawValue) {
-        _super.call(this, 'WAVEFORM');
-        this.rawValue = rawValue;
+        var _this = _super.call(this, 'WAVEFORM') || this;
+        _this.rawValue = rawValue;
         switch (rawValue) {
             case 0:
-                this.waveForm = 'sawtooth';
+                _this.waveForm = 'sawtooth';
                 break;
             case 1:
-                this.waveForm = 'sine';
+                _this.waveForm = 'sine';
                 break;
             case 2:
-                this.waveForm = 'triangle';
+                _this.waveForm = 'triangle';
                 break;
             case 3:
-                this.waveForm = 'square';
+                _this.waveForm = 'square';
                 break;
             default:
-                this.waveForm = 'sawtooth';
+                _this.waveForm = 'sawtooth';
         }
+        return _this;
     }
     return WaveformChange;
 }(SynthControlMessage));

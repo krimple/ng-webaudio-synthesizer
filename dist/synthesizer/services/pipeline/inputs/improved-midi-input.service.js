@@ -8,37 +8,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var models_1 = require('../../../models');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var models_1 = require("../../../models");
+var http_1 = require("@angular/http");
 var ImprovedMidiInputService = (function () {
-    function ImprovedMidiInputService(zone) {
+    function ImprovedMidiInputService(zone, http) {
         this.zone = zone;
+        this.http = http;
         this.subscriptions = [];
         this.subscribedDevices = [];
-        this.deviceMappings = [
-            { key: 'name', value: 'MPK225 Port A', type: 'midi' },
-            { key: 'name', value: 'KMC MultiPad', type: 'percussion' },
-            { key: 'name', value: 'Adafruit Bluefruit LE Bluetooth', type: 'midi' },
-            { key: 'name', value: 'iRig KEYS 25', type: 'midi' },
-            { key: 'name', value: 'iRig KEYS 25 MIDI 1', type: 'midi' },
-            { key: 'id', value: '167603758', type: 'percussion' },
-            { key: 'name', value: 'Touch Board     ', type: 'midi' },
-            { key: 'id', value: '-1614721547', type: 'percussion' },
-            { key: 'id', value: '-1415071510', type: 'midi' },
-            { key: 'id', value: '1999784255', type: 'percussion' },
-            { key: 'id', value: '1852567680', type: 'percussion' },
-            { key: 'name', value: 'Network Session 1', type: 'percussion' },
-            { key: 'name', value: 'krimple-iphone Bluetooth', type: 'percussion' },
-            { key: 'name', value: 'Cordova Bluetooth', type: 'percussion' },
-            { key: 'id', value: '0C2F7210E6038867BE36D163C7D8C2457143C8FA73EC54BD8F32417669F0B2C6', type: 'percussion' }
-        ];
     }
     // reference to pipeline's synth service stream
     ImprovedMidiInputService.prototype.setup = function (synthStream$) {
-        var _this = this;
         var self = this;
         // hold ref to synth note and control stream
         self.synthStream$ = synthStream$;
+        // try to load device mapppings from root
+        // TODO allow configuration of this file name somehow
+        self.http.get('./assets/midi-device-mappings.json')
+            .map(function (response) { return response.json(); })
+            .subscribe(function (config) {
+            self.configMidiAccess(config);
+        }, function (error) {
+            alert('Cannot find device mappings file');
+            console.log(error);
+        });
+    };
+    ImprovedMidiInputService.prototype.configMidiAccess = function (deviceMappings) {
+        var self = this;
         navigator.requestMIDIAccess()
             .then(function (access) {
             console.dir(access);
@@ -54,7 +52,7 @@ var ImprovedMidiInputService = (function () {
             console.log('devices available:');
             console.dir(devices);
             devices.forEach(function (device) {
-                var deviceInfo = _this.deviceMappings.find(function (deviceMapping) {
+                var deviceInfo = deviceMappings.find(function (deviceMapping) {
                     return deviceMapping.value === device[deviceMapping.key];
                 });
                 if (deviceInfo) {
@@ -190,12 +188,11 @@ var ImprovedMidiInputService = (function () {
         });
     };
     ;
-    ImprovedMidiInputService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [(typeof (_a = typeof core_1.NgZone !== 'undefined' && core_1.NgZone) === 'function' && _a) || Object])
-    ], ImprovedMidiInputService);
     return ImprovedMidiInputService;
-    var _a;
 }());
+ImprovedMidiInputService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [core_1.NgZone, http_1.Http])
+], ImprovedMidiInputService);
 exports.ImprovedMidiInputService = ImprovedMidiInputService;
 //# sourceMappingURL=improved-midi-input.service.js.map

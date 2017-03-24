@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var StreamEvent = (function () {
     function StreamEvent(payload, timeOffset) {
         this.payload = payload;
