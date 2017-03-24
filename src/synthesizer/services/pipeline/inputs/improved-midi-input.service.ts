@@ -30,7 +30,7 @@ export class ImprovedMidiInputService {
 
     // try to load device mapppings from root
     // TODO allow configuration of this file name somehow
-    self.http.get('./midi-device-mappings.json')
+    self.http.get('./assets/midi-device-mappings.json')
       .map((response) => response.json())
       .subscribe(
         (config: any[]) => {

@@ -26,7 +26,7 @@ var ImprovedMidiInputService = (function () {
         self.synthStream$ = synthStream$;
         // try to load device mapppings from root
         // TODO allow configuration of this file name somehow
-        self.http.get('./midi-device-mappings.json')
+        self.http.get('./assets/midi-device-mappings.json')
             .map(function (response) { return response.json(); })
             .subscribe(function (config) {
             self.configMidiAccess(config);
