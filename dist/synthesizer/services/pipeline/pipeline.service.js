@@ -8,14 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var improved_midi_input_service_1 = require('./inputs/improved-midi-input.service');
-var synthesis_service_1 = require('./synthesis/synthesis.service');
-var audio_output_service_1 = require('./outputs/audio-output.service');
-var core_1 = require('@angular/core');
+Object.defineProperty(exports, "__esModule", { value: true });
+var improved_midi_input_service_1 = require("./inputs/improved-midi-input.service");
+var synthesis_service_1 = require("./synthesis/synthesis.service");
+var audio_output_service_1 = require("./outputs/audio-output.service");
+var core_1 = require("@angular/core");
 // TODO see if this is a problem - otherwise revert to rxjs
-var Subject_1 = require('rxjs/Subject');
-var drum_pcm_triggering_service_1 = require('./synthesis/drum-pcm-triggering.service');
-var midi_note_service_1 = require('./synthesis/midi-note.service');
+var Subject_1 = require("rxjs/Subject");
+var drum_pcm_triggering_service_1 = require("./synthesis/drum-pcm-triggering.service");
+var midi_note_service_1 = require("./synthesis/midi-note.service");
 var PipelineService = (function () {
     function PipelineService(midiNoteService, improvedMidiInputService, synthesisService, audioOutputService, drumPCMTriggeringService) {
         this.midiNoteService = midiNoteService;
@@ -46,11 +47,15 @@ var PipelineService = (function () {
     PipelineService.prototype.end = function () {
         // TODO - disconnect
     };
-    PipelineService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [midi_note_service_1.MidiNoteService, improved_midi_input_service_1.ImprovedMidiInputService, synthesis_service_1.SynthesisService, audio_output_service_1.AudioOutputService, drum_pcm_triggering_service_1.DrumPCMTriggeringService])
-    ], PipelineService);
     return PipelineService;
 }());
+PipelineService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [midi_note_service_1.MidiNoteService,
+        improved_midi_input_service_1.ImprovedMidiInputService,
+        synthesis_service_1.SynthesisService,
+        audio_output_service_1.AudioOutputService,
+        drum_pcm_triggering_service_1.DrumPCMTriggeringService])
+], PipelineService);
 exports.PipelineService = PipelineService;
 //# sourceMappingURL=pipeline.service.js.map

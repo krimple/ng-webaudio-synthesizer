@@ -8,11 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var rxjs_1 = require('rxjs');
-var models_1 = require('../../../models');
-var midi_note_service_1 = require('./midi-note.service');
-var synth_note_message_1 = require('../../../models/synth-note-message');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var rxjs_1 = require("rxjs");
+var models_1 = require("../../../models");
+var midi_note_service_1 = require("./midi-note.service");
+var synth_note_message_1 = require("../../../models/synth-note-message");
 var SynthesisService = (function () {
     function SynthesisService(midiNoteService) {
         this.midiNoteService = midiNoteService;
@@ -44,6 +45,7 @@ var SynthesisService = (function () {
                 else {
                     _this.midiNoteService.playNoteByNoteValue(message.note);
                 }
+                // TODO restore this
             }
             else if (message instanceof synth_note_message_1.ClockTick) {
                 console.log('pulse!');
@@ -77,11 +79,11 @@ var SynthesisService = (function () {
         oscillator.start(this.audioContext.currentTime);
         oscillator.stop(this.audioContext.currentTime + 100);
     };
-    SynthesisService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [midi_note_service_1.MidiNoteService])
-    ], SynthesisService);
     return SynthesisService;
 }());
+SynthesisService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [midi_note_service_1.MidiNoteService])
+], SynthesisService);
 exports.SynthesisService = SynthesisService;
 //# sourceMappingURL=synthesis.service.js.map

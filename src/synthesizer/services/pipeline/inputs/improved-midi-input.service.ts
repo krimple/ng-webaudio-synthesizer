@@ -1,10 +1,12 @@
 import { Subject } from 'rxjs';
 import {Injectable, NgZone} from '@angular/core';
+
 import {
   SynthNoteOff, SynthNoteOn,
   VolumeChange, SynthMessage,
   WaveformChange, TriggerSample
 } from '../../../models';
+import { Http } from "@angular/http";
 
 declare const navigator: any;
 
@@ -15,33 +17,33 @@ export class ImprovedMidiInputService {
 
   private subscriptions: any[] = [];
   private subscribedDevices: any[] = [];
-  private deviceMappings: any = [
-    { key: 'name', value: 'MPK225 Port A', type: 'midi'},
-    { key: 'name', value: 'KMC MultiPad', type: 'percussion'},
-    { key: 'name', value: 'Adafruit Bluefruit LE Bluetooth', type: 'midi'},
-    { key: 'name', value: 'iRig KEYS 25', type: 'midi' },
-    { key: 'name', value: 'iRig KEYS 25 MIDI 1', type: 'midi' },
-    { key: 'id', value: '167603758', type: 'percussion' },
-    { key: 'name', value: 'Touch Board     ', type: 'midi' },
-    { key: 'id', value: '-1614721547', type: 'percussion'}, // MIDI Kat pad
-    { key: 'id', value: '-1415071510', type: 'midi'},         // Bare Conductive
-    { key: 'id', value: '1999784255', type: 'percussion'},  // MIDI Kat board
-    { key: 'id', value: '1852567680', type: 'percussion'},
-    { key: 'name', value: 'Network Session 1', type: 'percussion'},
-    { key: 'name', value: 'krimple-iphone Bluetooth', type: 'percussion'},
-    { key: 'name', value: 'Cordova Bluetooth', type: 'percussion'},
-    { key: 'id', value: '0C2F7210E6038867BE36D163C7D8C2457143C8FA73EC54BD8F32417669F0B2C6', type: 'percussion'}
-  ];
 
 
-  constructor(private zone: NgZone) { }
+  constructor(private zone: NgZone, private http: Http) { }
   // reference to pipeline's synth service stream
 
   setup(synthStream$: Subject<SynthMessage>) {
     const self = this;
+
     // hold ref to synth note and control stream
     self.synthStream$ = synthStream$;
 
+    // try to load device mapppings from root
+    // TODO allow configuration of this file name somehow
+    self.http.get('./midi-device-mappings.json')
+      .map((response) => response.json())
+      .subscribe(
+        (config: any[]) => {
+          self.configMidiAccess(config);
+        },
+        (error) => {
+          alert('Cannot find device mappings file');
+          console.log(error);
+        });
+  }
+
+  configMidiAccess(deviceMappings: any[]) {
+    const self = this;
     navigator.requestMIDIAccess()
       .then(
         (access) => {
@@ -59,7 +61,7 @@ export class ImprovedMidiInputService {
           console.dir(devices);
 
           devices.forEach((device) => {
-            const deviceInfo = this.deviceMappings.find((deviceMapping: any) => {
+            const deviceInfo = deviceMappings.find((deviceMapping: any) => {
              return deviceMapping.value === device[deviceMapping.key];
             });
             if (deviceInfo) {

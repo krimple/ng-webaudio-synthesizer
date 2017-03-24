@@ -8,7 +8,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
 var NoteTranslationService = (function () {
     function NoteTranslationService() {
         this.noteMappings = {
@@ -40,7 +41,8 @@ var NoteTranslationService = (function () {
             'E7': 2637.02, 'F7': 2793.83, 'F#7': 2959.96, 'Gb7': 2959.96, 'G7': 3135.96,
             'G#7': 3322.44, 'Ab7': 3322.44, 'A7': 3520.00, 'A#7': 3729.31, 'Bb7': 3729.31,
             'B7': 3951.07, 'C8': 4186.01, 'C#8': 4434.92, 'Db8': 4434.92, 'D8': 4698.64,
-            'D#8': 4978.03, 'Eb8': 4978.0 };
+            'D#8': 4978.03, 'Eb8': 4978.0
+        };
         this.scales = {
             'majorBlues': ['C', 'D', 'D#', 'E', 'G', 'A'],
             'minorBlues': ['C', 'D#', 'F', 'F#', 'G', 'Bb'],
@@ -67,11 +69,11 @@ var NoteTranslationService = (function () {
         });
         return freqs;
     };
-    NoteTranslationService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [])
-    ], NoteTranslationService);
     return NoteTranslationService;
 }());
+NoteTranslationService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [])
+], NoteTranslationService);
 exports.NoteTranslationService = NoteTranslationService;
 //# sourceMappingURL=note-translation.service.js.map

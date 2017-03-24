@@ -1,9 +1,10 @@
 "use strict";
-var sample_1 = require('./sample');
+Object.defineProperty(exports, "__esModule", { value: true });
+var sample_1 = require("./sample");
 exports.Sample = sample_1.Sample;
-var stream_event_1 = require('./stream-event');
+var stream_event_1 = require("./stream-event");
 exports.StreamEvent = stream_event_1.StreamEvent;
-var synth_note_message_1 = require('./synth-note-message');
+var synth_note_message_1 = require("./synth-note-message");
 exports.SynthNoteMessage = synth_note_message_1.SynthNoteMessage;
 exports.SynthControlMessage = synth_note_message_1.SynthControlMessage;
 exports.VolumeChange = synth_note_message_1.VolumeChange;

@@ -1,0 +1,75 @@
+[{
+    "key": "name",
+    "value": "MPK225 Port A",
+    "type": "midi"
+  },
+  {
+    "key": "name",
+    "value": "KMC MultiPad",
+    "type": "percussion"
+  },
+  {
+    "key": "name",
+    "value": "Adafruit Bluefruit LE Bluetooth",
+    "type": "midi"
+  },
+  {
+    "key": "name",
+    "value": "iRig KEYS 25",
+    "type": "midi"
+  },
+  {
+    "key": "name",
+    "value": "iRig KEYS 25 MIDI 1",
+    "type": "midi"
+  },
+  {
+    "key": "id",
+    "value": "167603758",
+    "type": "percussion"
+  },
+  {
+    "key": "name",
+    "value": "Touch Board     ",
+    "type": "midi"
+  },
+  {
+    "key": "id",
+    "value": "-1614721547",
+    "type": "percussion"
+  },
+  {
+    "key": "id",
+    "value": "-1415071510",
+    "type": "midi"
+  },
+  {
+    "key": "id",
+    "value": "1999784255",
+    "type": "percussion"
+  },
+  {
+    "key": "id",
+    "value": "1852567680",
+    "type": "percussion"
+  },
+  {
+    "key": "name",
+    "value": "Network Session 1",
+    "type": "percussion"
+  },
+  {
+    "key": "name",
+    "value": "krimple-iphone Bluetooth",
+    "type": "percussion"
+  },
+  {
+    "key": "name",
+    "value": "Cordova Bluetooth",
+    "type": "percussion"
+  },
+  {
+    "key": "id",
+    "value": "0C2F7210E6038867BE36D163C7D8C2457143C8FA73EC54BD8F32417669F0B2C6",
+    "type": "percussion"
+  }]

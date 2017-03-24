@@ -8,15 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var core_1 = require('@angular/core');
-var models_1 = require('../../../models');
-var pipeline_service_1 = require('../pipeline.service');
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var models_1 = require("../../../models");
+var pipeline_service_1 = require("../pipeline.service");
+var SequencerStates;
 (function (SequencerStates) {
     SequencerStates[SequencerStates["STOPPED"] = 0] = "STOPPED";
     SequencerStates[SequencerStates["RECORDING"] = 1] = "RECORDING";
     SequencerStates[SequencerStates["PLAYING"] = 2] = "PLAYING";
-})(exports.SequencerStates || (exports.SequencerStates = {}));
-var SequencerStates = exports.SequencerStates;
+})(SequencerStates = exports.SequencerStates || (exports.SequencerStates = {}));
 ;
 var SequencerService = (function () {
     function SequencerService(pipelineService) {
@@ -103,11 +104,11 @@ var SequencerService = (function () {
     SequencerService.prototype.isRecording = function () {
         return this.state === SequencerStates.RECORDING;
     };
-    SequencerService = __decorate([
-        core_1.Injectable(), 
-        __metadata('design:paramtypes', [pipeline_service_1.PipelineService])
-    ], SequencerService);
     return SequencerService;
 }());
+SequencerService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [pipeline_service_1.PipelineService])
+], SequencerService);
 exports.SequencerService = SequencerService;
 //# sourceMappingURL=sequencer.service.js.map
