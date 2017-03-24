@@ -15,6 +15,7 @@ var audio_output_service_1 = require("./services/pipeline/outputs/audio-output.s
 var midi_note_service_1 = require("./services/pipeline/synthesis/midi-note.service");
 var sequencer_service_1 = require("./services/pipeline/processors/sequencer.service");
 var http_1 = require("@angular/http");
+var note_input_service_1 = require("./services/pipeline/inputs/note-input.service");
 var SynthesizerModule = (function () {
     function SynthesizerModule() {
     }
@@ -29,6 +30,7 @@ SynthesizerModule = __decorate([
             pipeline_service_1.PipelineService,
             midi_note_service_1.MidiNoteService,
             improved_midi_input_service_1.ImprovedMidiInputService,
+            note_input_service_1.NoteInputService,
             audio_output_service_1.AudioOutputService,
             drum_pcm_triggering_service_1.DrumPCMTriggeringService,
             sequencer_service_1.SequencerService,

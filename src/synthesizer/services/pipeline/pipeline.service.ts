@@ -10,6 +10,7 @@ import { DrumPCMTriggeringService } from './synthesis/drum-pcm-triggering.servic
 import { MidiNoteService, Note } from './synthesis/midi-note.service';
 import { SynthMessage } from '../../models';
 import { AsyncSubject, ReplaySubject } from 'rxjs';
+import { NoteInputService } from './inputs/note-input.service';
 declare var AudioContext: any;
 
 @Injectable()
@@ -24,6 +25,7 @@ export class PipelineService {
 
   constructor(private midiNoteService: MidiNoteService,
               private improvedMidiInputService: ImprovedMidiInputService,
+              private noteInputService: NoteInputService,
               private synthesisService: SynthesisService,
               private audioOutputService: AudioOutputService,
               private drumPCMTriggeringService: DrumPCMTriggeringService) {
@@ -36,7 +38,6 @@ export class PipelineService {
     this.audioOutputService.setup(this.audioContext, this.synthStream$);
     Note.configure(this.audioContext, this.audioOutputService.mainMixCompressor);
     this.midiNoteService.configure(this.audioContext, this.audioOutputService.mainMixCompressor);
-
     this.synthesisService.setup(this.audioContext, this.audioOutputService.mainMixCompressor);
 
     // setup drum service
@@ -46,6 +47,7 @@ export class PipelineService {
 
     // setup inputs
     this.improvedMidiInputService.setup(this.synthStream$);
+    this.noteInputService.setup(this.synthStream$);
 
     // now send all note inputs coming from midi and non-midi sources (web page components, etc)
     this.synthStream$.subscribe(

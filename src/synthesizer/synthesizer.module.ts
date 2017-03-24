@@ -7,6 +7,7 @@ import { AudioOutputService } from './services/pipeline/outputs/audio-output.ser
 import { MidiNoteService } from './services/pipeline/synthesis/midi-note.service';
 import { SequencerService } from './services/pipeline/processors/sequencer.service';
 import { HttpModule } from "@angular/http";
+import { NoteInputService } from './services/pipeline/inputs/note-input.service';
 @NgModule({
   imports: [
     HttpModule
@@ -15,6 +16,7 @@ import { HttpModule } from "@angular/http";
     PipelineService,
     MidiNoteService,
     ImprovedMidiInputService,
+    NoteInputService,
     AudioOutputService,
     DrumPCMTriggeringService,
     SequencerService,
