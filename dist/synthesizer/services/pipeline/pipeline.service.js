@@ -17,10 +17,12 @@ var core_1 = require("@angular/core");
 var Subject_1 = require("rxjs/Subject");
 var drum_pcm_triggering_service_1 = require("./synthesis/drum-pcm-triggering.service");
 var midi_note_service_1 = require("./synthesis/midi-note.service");
+var note_input_service_1 = require("./inputs/note-input.service");
 var PipelineService = (function () {
-    function PipelineService(midiNoteService, improvedMidiInputService, synthesisService, audioOutputService, drumPCMTriggeringService) {
+    function PipelineService(midiNoteService, improvedMidiInputService, noteInputService, synthesisService, audioOutputService, drumPCMTriggeringService) {
         this.midiNoteService = midiNoteService;
         this.improvedMidiInputService = improvedMidiInputService;
+        this.noteInputService = noteInputService;
         this.synthesisService = synthesisService;
         this.audioOutputService = audioOutputService;
         this.drumPCMTriggeringService = drumPCMTriggeringService;
@@ -39,6 +41,7 @@ var PipelineService = (function () {
         this.drumPCMTriggeringService.setup(this.audioContext, this.audioOutputService.mainMixCompressor, this.synthStream$);
         // setup inputs
         this.improvedMidiInputService.setup(this.synthStream$);
+        this.noteInputService.setup(this.synthStream$);
         // now send all note inputs coming from midi and non-midi sources (web page components, etc)
         this.synthStream$.subscribe(function (message) {
             self.synthesisService.receiveMessage(message);
@@ -53,6 +56,7 @@ PipelineService = __decorate([
     core_1.Injectable(),
     __metadata("design:paramtypes", [midi_note_service_1.MidiNoteService,
         improved_midi_input_service_1.ImprovedMidiInputService,
+        note_input_service_1.NoteInputService,
         synthesis_service_1.SynthesisService,
         audio_output_service_1.AudioOutputService,
         drum_pcm_triggering_service_1.DrumPCMTriggeringService])
