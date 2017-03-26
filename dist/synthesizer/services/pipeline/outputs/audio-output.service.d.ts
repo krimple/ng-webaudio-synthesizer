@@ -4,7 +4,10 @@ export declare class AudioOutputService {
     mainMixCompressor: DynamicsCompressorNode;
     private mainMixFinalGain;
     private mainMixOutput;
-    private messageStream$;
-    setup(audioContext: AudioContext, messageStream$: Subject<SynthMessage>): void;
+    private messageSubscription;
+    private synthStream$;
+    setup(synthStream$: Subject<SynthMessage>, audioContext: AudioContext): void;
+    begin(): void;
     setVolume(gain: number): void;
+    end(): void;
 }

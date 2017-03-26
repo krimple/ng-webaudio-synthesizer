@@ -5,12 +5,8 @@ import { WaveformChange } from '../../../models/synth-note-message';
 export class MidiNoteService {
 
   private notes: Note[];
-  private audioBus: AudioNode;
 
-  constructor(/*controlPanelData: Observable<ControlPanelData>*/) {
-  }
-
-  configure(audioContext: AudioContext, audioBus: AudioNode) {
+  setup(audioContext: AudioContext, audioBus: AudioNode) {
     Note.configure(audioContext, audioBus/*, controlPanelData*/);
 
     this.notes = [
@@ -132,7 +128,6 @@ export class Note {
   }
 
   noteOn() {
-    console.log(`Playing note ${this.noteValues}/${this.frequency}`);
     this.playingSince = Note.context.currentTime;
     this.gainNode.gain.value = this.startingVolume;
     const oscillator = this.getNewOscillator();

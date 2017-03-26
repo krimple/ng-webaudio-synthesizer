@@ -7,10 +7,10 @@ export declare class SynthesisService {
     private targetNode;
     private currentWaveForm;
     private notes;
-    noteStream$: Subject<SynthMessage>;
-    receiveMessage(message: SynthMessage): void;
+    private synthStream$;
     constructor(midiNoteService: MidiNoteService);
-    setup(audioContext: AudioContext, targetNode: AudioNode): void;
+    setup(synthStream$: Subject<SynthMessage>, audioContext: AudioContext, targetNode: AudioNode): void;
+    receiveMessage(message: SynthMessage): void;
     private setupSubscriptions();
     private clockTick();
 }

@@ -1,5 +1,5 @@
-import { Subject } from 'rxjs';
-import {Injectable, NgZone} from '@angular/core';
+import { ReplaySubject, Subject } from 'rxjs';
+import { Inject, Injectable, NgZone } from '@angular/core';
 
 import {
   SynthNoteOff, SynthNoteOn,
@@ -7,44 +7,56 @@ import {
   WaveformChange, TriggerSample
 } from '../../../models';
 import { Http } from "@angular/http";
+import { SynthStreamWrapper } from '../../synth-stream-wrapper';
 
 declare const navigator: any;
 
+export enum MidiServiceStates { ACTIVE, INACTIVE }
+
 @Injectable()
-export class ImprovedMidiInputService {
+export class MidiInputService {
 
   private synthStream$: Subject<SynthMessage>;
+  private _state: MidiServiceStates = MidiServiceStates.INACTIVE;
+
+  get state(): MidiServiceStates {
+    return this._state;
+  }
 
   private subscriptions: any[] = [];
-  private subscribedDevices: any[] = [];
 
 
-  constructor(private zone: NgZone, private http: Http) { }
-  // reference to pipeline's synth service stream
+  constructor(private zone: NgZone, private http: Http) {
+    console.log("Synth stream created");
+  }
 
   setup(synthStream$: Subject<SynthMessage>) {
+    this.synthStream$ = synthStream$;
+  }
+
+  // reference to pipeline's synth service stream
+  beginMidiInput(devices = null) {
+    if (this._state !== MidiServiceStates.INACTIVE) {
+      console.log('Already listening for input. Stop the service first.');
+      return;
+    }
     const self = this;
-
-    // hold ref to synth note and control stream
-    self.synthStream$ = synthStream$;
-
-    // try to load device mapppings from root
-    // TODO allow configuration of this file name somehow
     self.http.get('./assets/midi-device-mappings.json')
       .map((response) => response.json())
       .subscribe(
         (config: any[]) => {
-          self.configMidiAccess(config);
+          self.configMidiAccess(devices ? devices : config);
+          console.log('midi service enabled');
+          self._state = MidiServiceStates.ACTIVE;
         },
         (error) => {
-          alert('Cannot find device mappings file');
+          alert('Cannot find mappings file');
           console.log(error);
         });
   }
 
-  configMidiAccess(deviceMappings: any[]) {
-    const self = this;
-    navigator.requestMIDIAccess()
+  elaborateDevices(): Promise<any[]> {
+    return navigator.requestMIDIAccess()
       .then(
         (access) => {
           console.dir(access);
@@ -57,25 +69,27 @@ export class ImprovedMidiInputService {
             }
             devices.push(next.value);
           }
-          console.log('devices available:');
+          console.log('devices elaborated');
           console.dir(devices);
-
-          devices.forEach((device) => {
-            const deviceInfo = deviceMappings.find((deviceMapping: any) => {
-             return deviceMapping.value === device[deviceMapping.key];
-            });
-            if (deviceInfo) {
-              self.subscribedDevices.push(deviceInfo);
-              self.subscribe(device, deviceInfo);
-            }
-          });
-        },
-        (error) => {
-          console.error('no MIDI access!');
-          throw new Error('no MIDI Access. Are you on Chrome?');
-        }
-      );
+          return devices;
+        });
   }
+
+  private configMidiAccess(deviceMappings: any[]) {
+    const self = this;
+    this.elaborateDevices()
+      .then((devices) => {
+        devices.forEach((device) => {
+          const deviceInfo = deviceMappings.find((deviceMapping: any) => {
+            return deviceMapping.value === device[deviceMapping.key];
+          });
+          if (deviceInfo) {
+            self.subscribe(device, deviceInfo);
+          }
+        });
+      });
+  }
+
 
   private subscribe(device, deviceInfo) {
     const self = this;
@@ -83,6 +97,7 @@ export class ImprovedMidiInputService {
     device.open()
       .then((subscription) => {
         console.log('subscribed!');
+        console.dir(subscription);
         if (deviceInfo.type === 'midi') {
           self.startMusicNoteMessageDelivery(device, subscription);
         } else if (deviceInfo.type === 'percussion') {
@@ -111,14 +126,21 @@ export class ImprovedMidiInputService {
     this.subscriptions.push(subscription);
   }
 
-  private stop() {
+  endMidiInput() {
     const self = this;
-    self.subscribedDevices.forEach((device) => {
-      if (device.connected) {
+    if (this._state === MidiServiceStates.INACTIVE) {
+      console.log('Midi Service not active. Only call this to stop an active state');
+      return;
+    }
+    self.subscriptions.forEach((device) => {
+      console.dir(device);
+      if (device.state === 'connected') {
         device.close();
       }
     });
-    self.subscribedDevices.length = 0;
+    self.subscriptions.length = 0;
+    console.log('devices disconnected, MIDI input disabled.');
+    self._state = MidiServiceStates.INACTIVE;
   }
 
   private processMusicNoteMessage(midiChannelMessage: any) {
@@ -161,9 +183,9 @@ export class ImprovedMidiInputService {
       switch (midiChannelMessage.data[1]) {
         case 38:
           this.zone.run(() => {
-          this.triggerSample('snare', velocity);
-        });
-         break;
+            this.triggerSample('snare', velocity);
+          });
+          break;
         case 36:
           this.zone.run(() => {
             this.triggerSample('bass', velocity);
@@ -199,13 +221,13 @@ export class ImprovedMidiInputService {
         midiChannelMessage.data[1],
         midiChannelMessage.data[2]);
     }
-  };
+  }
 
   private triggerSample(name: string, velocity: number) {
     this.zone.run(() => {
       this.synthStream$.next(new TriggerSample(name, velocity));
     });
-  };
+  }
 }
 
 

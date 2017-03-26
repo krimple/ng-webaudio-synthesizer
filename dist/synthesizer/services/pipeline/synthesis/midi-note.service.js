@@ -1,20 +1,15 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var rxjs_1 = require("rxjs");
-var core_1 = require("@angular/core");
+import { Subject } from 'rxjs';
+import { Injectable } from '@angular/core';
 var MidiNoteService = (function () {
     function MidiNoteService() {
     }
-    MidiNoteService.prototype.configure = function (audioContext, audioBus) {
+    MidiNoteService.prototype.setup = function (audioContext, audioBus) {
         Note.configure(audioContext, audioBus /*, controlPanelData*/);
         this.notes = [
             new Note(['C-1'], 8.176), new Note(['C#-1', 'Db-1'], 8.662), new Note(['D-1'], 9.177),
@@ -87,16 +82,15 @@ var MidiNoteService = (function () {
     return MidiNoteService;
 }());
 MidiNoteService = __decorate([
-    core_1.Injectable(),
-    __metadata("design:paramtypes", [])
+    Injectable()
 ], MidiNoteService);
-exports.MidiNoteService = MidiNoteService;
+export { MidiNoteService };
 var Note = (function () {
     function Note(noteValues, frequency) {
         this.noteValues = noteValues;
         this.frequency = frequency;
         // for any notes that are fired, here's the message to stop them
-        this.stopWatcher$ = new rxjs_1.Subject();
+        this.stopWatcher$ = new Subject();
         this.startingVolume = 0.2;
         this.playingSince = -1;
         this.gainNode = Note.context.createGain();
@@ -126,7 +120,6 @@ var Note = (function () {
         return oscillator;
     };
     Note.prototype.noteOn = function () {
-        console.log("Playing note " + this.noteValues + "/" + this.frequency);
         this.playingSince = Note.context.currentTime;
         this.gainNode.gain.value = this.startingVolume;
         var oscillator = this.getNewOscillator();
@@ -139,8 +132,8 @@ var Note = (function () {
     };
     return Note;
 }());
+export { Note };
 Note.waveform = 'sine';
-exports.Note = Note;
 var ToneWorker = (function () {
     function ToneWorker(oscillator, frequency, currentTime, outputBus, stopWatcher$) {
         this.stopWatcher$ = stopWatcher$;
@@ -165,5 +158,5 @@ var ControlPanelData = (function () {
     }
     return ControlPanelData;
 }());
-exports.ControlPanelData = ControlPanelData;
+export { ControlPanelData };
 //# sourceMappingURL=midi-note.service.js.map

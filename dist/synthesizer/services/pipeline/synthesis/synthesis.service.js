@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,37 +7,33 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = require("@angular/core");
-var rxjs_1 = require("rxjs");
-var models_1 = require("../../../models");
-var midi_note_service_1 = require("./midi-note.service");
-var synth_note_message_1 = require("../../../models/synth-note-message");
+import { Injectable } from '@angular/core';
+import { SynthNoteOff, SynthNoteOn, WaveformChange } from '../../../models';
+import { MidiNoteService, Note } from './midi-note.service';
+import { ClockTick, TriggerSample } from '../../../models/synth-note-message';
 var SynthesisService = (function () {
     function SynthesisService(midiNoteService) {
         this.midiNoteService = midiNoteService;
         // TODO - figure out how to modify on the fly (event?)
         this.currentWaveForm = 'sawtooth';
     }
-    // send a message to the synth upon receipt from outside world
-    SynthesisService.prototype.receiveMessage = function (message) {
-        this.noteStream$.next(message);
-    };
-    SynthesisService.prototype.setup = function (audioContext, targetNode) {
-        console.log("audioContext is " + audioContext);
+    SynthesisService.prototype.setup = function (synthStream$, audioContext, targetNode) {
+        this.synthStream$ = synthStream$;
         this.audioContext = audioContext;
         this.targetNode = targetNode;
-        this.noteStream$ = new rxjs_1.Subject();
-        // this.setupNotes(audioContext, targetNode);
         this.setupSubscriptions();
+    };
+    // send a message to the synth upon receipt from outside world
+    SynthesisService.prototype.receiveMessage = function (message) {
+        this.synthStream$.next(message);
     };
     SynthesisService.prototype.setupSubscriptions = function () {
         var _this = this;
         var self = this;
-        this.noteStream$
-            .filter(function (message) { return !(message instanceof synth_note_message_1.TriggerSample); })
+        this.synthStream$
+            .filter(function (message) { return !(message instanceof TriggerSample); })
             .subscribe(function (message) {
-            if (message instanceof models_1.SynthNoteOn) {
+            if (message instanceof SynthNoteOn) {
                 if (typeof message.note === 'number') {
                     _this.midiNoteService.playNoteByMidiNoteNumber(message.note);
                 }
@@ -47,11 +42,11 @@ var SynthesisService = (function () {
                 }
                 // TODO restore this
             }
-            else if (message instanceof synth_note_message_1.ClockTick) {
+            else if (message instanceof ClockTick) {
                 console.log('pulse!');
                 self.clockTick();
             }
-            else if (message instanceof models_1.SynthNoteOff) {
+            else if (message instanceof SynthNoteOff) {
                 if (typeof message.note === 'number') {
                     _this.midiNoteService.stopNoteByMidiNoteNumber(message.note);
                 }
@@ -59,9 +54,9 @@ var SynthesisService = (function () {
                     _this.midiNoteService.stopNoteByNoteValue(message.note);
                 }
             }
-            else if (message instanceof models_1.WaveformChange) {
+            else if (message instanceof WaveformChange) {
                 console.log('new waveform value is ', message.waveForm);
-                midi_note_service_1.Note.changeWaveform(message);
+                Note.changeWaveform(message);
             }
             else {
                 console.log('unknown message', JSON.stringify(message));
@@ -82,8 +77,8 @@ var SynthesisService = (function () {
     return SynthesisService;
 }());
 SynthesisService = __decorate([
-    core_1.Injectable(),
-    __metadata("design:paramtypes", [midi_note_service_1.MidiNoteService])
+    Injectable(),
+    __metadata("design:paramtypes", [MidiNoteService])
 ], SynthesisService);
-exports.SynthesisService = SynthesisService;
+export { SynthesisService };
 //# sourceMappingURL=synthesis.service.js.map

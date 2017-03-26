@@ -1,9 +1,7 @@
 import { WaveformChange } from '../../../models/synth-note-message';
 export declare class MidiNoteService {
     private notes;
-    private audioBus;
-    constructor();
-    configure(audioContext: AudioContext, audioBus: AudioNode): void;
+    setup(audioContext: AudioContext, audioBus: AudioNode): void;
     playNoteByMidiNoteNumber(noteNumber: any): void;
     stopNoteByMidiNoteNumber(noteNumber: any): void;
     playNoteByNoteValue(noteValueString: string): void;

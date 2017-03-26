@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,36 +7,53 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = require("@angular/core");
-var models_1 = require("../../../models");
-var http_1 = require("@angular/http");
-var ImprovedMidiInputService = (function () {
-    function ImprovedMidiInputService(zone, http) {
+import { Injectable, NgZone } from '@angular/core';
+import { SynthNoteOff, SynthNoteOn, VolumeChange, WaveformChange, TriggerSample } from '../../../models';
+import { Http } from "@angular/http";
+export var MidiServiceStates;
+(function (MidiServiceStates) {
+    MidiServiceStates[MidiServiceStates["ACTIVE"] = 0] = "ACTIVE";
+    MidiServiceStates[MidiServiceStates["INACTIVE"] = 1] = "INACTIVE";
+})(MidiServiceStates || (MidiServiceStates = {}));
+var MidiInputService = (function () {
+    function MidiInputService(zone, http) {
         this.zone = zone;
         this.http = http;
+        this._state = MidiServiceStates.INACTIVE;
         this.subscriptions = [];
-        this.subscribedDevices = [];
+        console.log("Synth stream created");
     }
+    Object.defineProperty(MidiInputService.prototype, "state", {
+        get: function () {
+            return this._state;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MidiInputService.prototype.setup = function (synthStream$) {
+        this.synthStream$ = synthStream$;
+    };
     // reference to pipeline's synth service stream
-    ImprovedMidiInputService.prototype.setup = function (synthStream$) {
+    MidiInputService.prototype.beginMidiInput = function (devices) {
+        if (devices === void 0) { devices = null; }
+        if (this._state !== MidiServiceStates.INACTIVE) {
+            console.log('Already listening for input. Stop the service first.');
+            return;
+        }
         var self = this;
-        // hold ref to synth note and control stream
-        self.synthStream$ = synthStream$;
-        // try to load device mapppings from root
-        // TODO allow configuration of this file name somehow
         self.http.get('./assets/midi-device-mappings.json')
             .map(function (response) { return response.json(); })
             .subscribe(function (config) {
-            self.configMidiAccess(config);
+            self.configMidiAccess(devices ? devices : config);
+            console.log('midi service enabled');
+            self._state = MidiServiceStates.ACTIVE;
         }, function (error) {
-            alert('Cannot find device mappings file');
+            alert('Cannot find mappings file');
             console.log(error);
         });
     };
-    ImprovedMidiInputService.prototype.configMidiAccess = function (deviceMappings) {
-        var self = this;
-        navigator.requestMIDIAccess()
+    MidiInputService.prototype.elaborateDevices = function () {
+        return navigator.requestMIDIAccess()
             .then(function (access) {
             console.dir(access);
             var iterator = access.inputs.values();
@@ -49,28 +65,32 @@ var ImprovedMidiInputService = (function () {
                 }
                 devices.push(next.value);
             }
-            console.log('devices available:');
+            console.log('devices elaborated');
             console.dir(devices);
+            return devices;
+        });
+    };
+    MidiInputService.prototype.configMidiAccess = function (deviceMappings) {
+        var self = this;
+        this.elaborateDevices()
+            .then(function (devices) {
             devices.forEach(function (device) {
                 var deviceInfo = deviceMappings.find(function (deviceMapping) {
                     return deviceMapping.value === device[deviceMapping.key];
                 });
                 if (deviceInfo) {
-                    self.subscribedDevices.push(deviceInfo);
                     self.subscribe(device, deviceInfo);
                 }
             });
-        }, function (error) {
-            console.error('no MIDI access!');
-            throw new Error('no MIDI Access. Are you on Chrome?');
         });
     };
-    ImprovedMidiInputService.prototype.subscribe = function (device, deviceInfo) {
+    MidiInputService.prototype.subscribe = function (device, deviceInfo) {
         var self = this;
         console.log("opening connection to " + device.name);
         device.open()
             .then(function (subscription) {
             console.log('subscribed!');
+            console.dir(subscription);
             if (deviceInfo.type === 'midi') {
                 self.startMusicNoteMessageDelivery(device, subscription);
             }
@@ -79,7 +99,7 @@ var ImprovedMidiInputService = (function () {
             }
         });
     };
-    ImprovedMidiInputService.prototype.startMusicNoteMessageDelivery = function (device, subscription) {
+    MidiInputService.prototype.startMusicNoteMessageDelivery = function (device, subscription) {
         var self = this;
         console.log("subscribing to midi messages from " + device.name);
         subscription.onmidimessage = function (data) {
@@ -87,7 +107,7 @@ var ImprovedMidiInputService = (function () {
         };
         this.subscriptions.push(subscription);
     };
-    ImprovedMidiInputService.prototype.startPercussionDelivery = function (device, subscription, instrument) {
+    MidiInputService.prototype.startPercussionDelivery = function (device, subscription, instrument) {
         var self = this;
         console.log("subscribing to percussion events for " + device.name + " as instrument " + instrument);
         subscription.onmidimessage = function (data) {
@@ -96,47 +116,54 @@ var ImprovedMidiInputService = (function () {
         };
         this.subscriptions.push(subscription);
     };
-    ImprovedMidiInputService.prototype.stop = function () {
+    MidiInputService.prototype.endMidiInput = function () {
         var self = this;
-        self.subscribedDevices.forEach(function (device) {
-            if (device.connected) {
+        if (this._state === MidiServiceStates.INACTIVE) {
+            console.log('Midi Service not active. Only call this to stop an active state');
+            return;
+        }
+        self.subscriptions.forEach(function (device) {
+            console.dir(device);
+            if (device.state === 'connected') {
                 device.close();
             }
         });
-        self.subscribedDevices.length = 0;
+        self.subscriptions.length = 0;
+        console.log('devices disconnected, MIDI input disabled.');
+        self._state = MidiServiceStates.INACTIVE;
     };
-    ImprovedMidiInputService.prototype.processMusicNoteMessage = function (midiChannelMessage) {
+    MidiInputService.prototype.processMusicNoteMessage = function (midiChannelMessage) {
         console.log("recieved: " + midiChannelMessage.data[0] + ": " + midiChannelMessage.data[1] + ": " + midiChannelMessage.data[2]);
         switch (midiChannelMessage.data[0]) {
             case 144:
-                this.synthStream$.next(new models_1.SynthNoteOn(midiChannelMessage.data[1]));
+                this.synthStream$.next(new SynthNoteOn(midiChannelMessage.data[1]));
                 break;
             case 128:
-                this.synthStream$.next(new models_1.SynthNoteOff(midiChannelMessage.data[1]));
+                this.synthStream$.next(new SynthNoteOff(midiChannelMessage.data[1]));
                 break;
             case 176:
                 // first pot on synth
                 if (midiChannelMessage.data[1] === 7) {
-                    this.synthStream$.next(new models_1.VolumeChange(midiChannelMessage.data[2]));
+                    this.synthStream$.next(new VolumeChange(midiChannelMessage.data[2]));
                 }
                 break;
             case 137:
                 // buttons on drum pad on synth
                 if (midiChannelMessage.data[1] === 36) {
-                    this.synthStream$.next(new models_1.WaveformChange(0));
+                    this.synthStream$.next(new WaveformChange(0));
                 }
                 else if (midiChannelMessage.data[1] === 37) {
-                    this.synthStream$.next(new models_1.WaveformChange(1));
+                    this.synthStream$.next(new WaveformChange(1));
                 }
                 else if (midiChannelMessage.data[1] === 38) {
-                    this.synthStream$.next(new models_1.WaveformChange(2));
+                    this.synthStream$.next(new WaveformChange(2));
                 }
                 break;
             default:
                 console.log('unknown midiChannelMessage', midiChannelMessage.data[0], midiChannelMessage.data[1], midiChannelMessage.data[2]);
         }
     };
-    ImprovedMidiInputService.prototype.processPercussionMessage = function (midiChannelMessage) {
+    MidiInputService.prototype.processPercussionMessage = function (midiChannelMessage) {
         var _this = this;
         console.log("recieved: " + midiChannelMessage.data[0] + ": " + midiChannelMessage.data[1] + ": " + midiChannelMessage.data[2]);
         if (midiChannelMessage.data[0] === 153 && midiChannelMessage.data[2] !== 0) {
@@ -180,19 +207,17 @@ var ImprovedMidiInputService = (function () {
             console.log('unknown drumset midiChannelMessage', midiChannelMessage.data[0], midiChannelMessage.data[1], midiChannelMessage.data[2]);
         }
     };
-    ;
-    ImprovedMidiInputService.prototype.triggerSample = function (name, velocity) {
+    MidiInputService.prototype.triggerSample = function (name, velocity) {
         var _this = this;
         this.zone.run(function () {
-            _this.synthStream$.next(new models_1.TriggerSample(name, velocity));
+            _this.synthStream$.next(new TriggerSample(name, velocity));
         });
     };
-    ;
-    return ImprovedMidiInputService;
+    return MidiInputService;
 }());
-ImprovedMidiInputService = __decorate([
-    core_1.Injectable(),
-    __metadata("design:paramtypes", [core_1.NgZone, http_1.Http])
-], ImprovedMidiInputService);
-exports.ImprovedMidiInputService = ImprovedMidiInputService;
-//# sourceMappingURL=improved-midi-input.service.js.map
+MidiInputService = __decorate([
+    Injectable(),
+    __metadata("design:paramtypes", [NgZone, Http])
+], MidiInputService);
+export { MidiInputService };
+//# sourceMappingURL=midi-input.service.js.map

@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,8 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = require("@angular/core");
+import { Injectable } from '@angular/core';
 var NoteTranslationService = (function () {
     function NoteTranslationService() {
         this.noteMappings = {
@@ -72,8 +70,8 @@ var NoteTranslationService = (function () {
     return NoteTranslationService;
 }());
 NoteTranslationService = __decorate([
-    core_1.Injectable(),
+    Injectable(),
     __metadata("design:paramtypes", [])
 ], NoteTranslationService);
-exports.NoteTranslationService = NoteTranslationService;
+export { NoteTranslationService };
 //# sourceMappingURL=note-translation.service.js.map

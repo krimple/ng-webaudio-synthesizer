@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { SubjectSubscription } from 'rxjs/SubjectSubscription';
 import { StreamEvent, SynthMessage } from '../../../models';
 import { PipelineService } from '../pipeline.service';
+import { SynthStreamWrapper } from '../../synth-stream-wrapper';
 
 export enum SequencerStates {STOPPED, RECORDING, PLAYING};
 
@@ -10,19 +10,17 @@ export enum SequencerStates {STOPPED, RECORDING, PLAYING};
 export class SequencerService {
 
   // will hold reference to synth message observable
-  private synthStream$: Subject<SynthMessage>;
   private streamBuffer: StreamEvent[] = [];
   private subscription: Subscription;
   // start out idle
   private state = SequencerStates.STOPPED;
 
-  constructor(pipelineService: PipelineService) {
-    this.synthStream$ = pipelineService.synthStream$;
-  }
+  constructor(private synthStreamWrapper: SynthStreamWrapper,
+              pipelineService: PipelineService) { }
 
   record() {
     // guard, guard, guard
-    if (!this.synthStream$) {
+    if (!this.synthStreamWrapper.synthStream$) {
       throw new Error('Pipeline must provide a valid data stream.');
     }
 
@@ -36,7 +34,7 @@ export class SequencerService {
 
     // record!
     const startTime = Date.now();
-    this.subscription = this.synthStream$.subscribe(
+    this.subscription = this.synthStreamWrapper.synthStream$.subscribe(
       (eventPayload: any) => {
         this.streamBuffer.push(new StreamEvent(eventPayload, Date.now() - startTime));
       }
@@ -90,7 +88,7 @@ export class SequencerService {
     // ok, we do, set up events for each note and play 'em in time
     this.streamBuffer.forEach((event: StreamEvent) => {
       setTimeout(() => {
-        self.synthStream$.next(event.payload);
+        self.synthStreamWrapper.synthStream$.next(event.payload);
       }, event.timeOffset);
     });
 

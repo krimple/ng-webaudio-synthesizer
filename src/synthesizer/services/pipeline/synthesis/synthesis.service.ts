@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import {
   SynthNoteOff,
@@ -7,6 +7,7 @@ import {
 } from '../../../models';
 import { MidiNoteService, Note } from './midi-note.service';
 import {ClockTick, TriggerSample} from '../../../models/synth-note-message';
+import { SynthStreamWrapper } from '../../synth-stream-wrapper';
 
 @Injectable()
 export class SynthesisService {
@@ -18,29 +19,27 @@ export class SynthesisService {
   // object literal
   private notes: any;
 
-  // central switchboard observable / observer
-  public noteStream$: Subject<SynthMessage>;
-
-  // send a message to the synth upon receipt from outside world
-  public receiveMessage(message: SynthMessage) {
-    this.noteStream$.next(message);
-  }
+  private synthStream$: Subject<SynthMessage>;
 
   constructor(private midiNoteService: MidiNoteService) {
   }
 
-  public setup(audioContext: AudioContext, targetNode: AudioNode) {
-    console.log(`audioContext is ${audioContext}`);
+  public setup(synthStream$: Subject<SynthMessage>, audioContext: AudioContext, targetNode: AudioNode) {
+    this.synthStream$ = synthStream$;
     this.audioContext = audioContext;
     this.targetNode = targetNode;
-    this.noteStream$ = new Subject<SynthMessage>();
-    // this.setupNotes(audioContext, targetNode);
     this.setupSubscriptions();
   }
 
+  // send a message to the synth upon receipt from outside world
+  public receiveMessage(message: SynthMessage) {
+    this.synthStream$.next(message);
+  }
+
+
   private setupSubscriptions() {
     const self = this;
-    this.noteStream$
+    this.synthStream$
       .filter((message: SynthMessage) => !(message instanceof TriggerSample))
       .subscribe(
         (message: SynthMessage) => {

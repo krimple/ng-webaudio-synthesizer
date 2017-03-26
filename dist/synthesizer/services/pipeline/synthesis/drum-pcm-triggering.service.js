@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,33 +7,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = require("@angular/core");
-var http_1 = require("@angular/http");
-var models_1 = require("../../../models");
-var rxjs_1 = require("rxjs");
+import { Injectable } from '@angular/core';
+import { Http, BaseRequestOptions, ResponseContentType } from '@angular/http';
+import { Sample, TriggerSample } from '../../../models';
 var DrumPCMTriggeringService = (function () {
     function DrumPCMTriggeringService(http) {
         this.http = http;
-        this.synthStream$ = new rxjs_1.Subject();
     }
-    DrumPCMTriggeringService.prototype.setup = function (context, targetNode, synthStream$) {
+    DrumPCMTriggeringService.prototype.setup = function (synthStream$, context, targetNode) {
         var _this = this;
         var self = this;
-        self.synthStream$ = synthStream$;
+        this.synthStream$ = synthStream$;
         self.samples = {
-            bass: new models_1.Sample('assets/drums/bass-thud.wav'),
-            hihat: new models_1.Sample('assets/drums/hi-hat-closed.wav'),
-            hihatopen: new models_1.Sample('assets/drums/hi-hat-open.wav'),
-            snare: new models_1.Sample('assets/drums/short-snare.wav'),
-            flam: new models_1.Sample('assets/drums/snare-flam.wav'),
-            rimshot: new models_1.Sample('assets/drums/snare-rimshot.wav'),
-            htrimshot: new models_1.Sample('assets/drums/hi-tom-rimshot.wav'),
-            tom1: new models_1.Sample('assets/drums/hi-tom-normal.wav'),
-            tom2: new models_1.Sample('assets/drums/low-tom.wav'),
-            crash: new models_1.Sample('assets/drums/crash-trash.wav'),
-            ride: new models_1.Sample('assets/drums/ride-standard.wav'),
-            ping: new models_1.Sample('assets/drums/ride-ping.wav')
+            bass: new Sample('assets/drums/bass-thud.wav'),
+            hihat: new Sample('assets/drums/hi-hat-closed.wav'),
+            hihatopen: new Sample('assets/drums/hi-hat-open.wav'),
+            snare: new Sample('assets/drums/short-snare.wav'),
+            flam: new Sample('assets/drums/snare-flam.wav'),
+            rimshot: new Sample('assets/drums/snare-rimshot.wav'),
+            htrimshot: new Sample('assets/drums/hi-tom-rimshot.wav'),
+            tom1: new Sample('assets/drums/hi-tom-normal.wav'),
+            tom2: new Sample('assets/drums/low-tom.wav'),
+            crash: new Sample('assets/drums/crash-trash.wav'),
+            ride: new Sample('assets/drums/ride-standard.wav'),
+            ping: new Sample('assets/drums/ride-ping.wav')
         };
         self.loadSamples(context).then(function () {
             console.log('samples loaded...  Subscribing to streams');
@@ -48,7 +44,7 @@ var DrumPCMTriggeringService = (function () {
         // now sip please, get what you want and play it!
         self.synthStream$
             .filter(function (synthMessage) {
-            return synthMessage instanceof models_1.TriggerSample;
+            return synthMessage instanceof TriggerSample;
         })
             .subscribe(function (message) {
             var instrument = message.instrument;
@@ -95,8 +91,8 @@ var DrumPCMTriggeringService = (function () {
     };
     DrumPCMTriggeringService.prototype.loadSample = function (context, sample) {
         var _this = this;
-        var options = new http_1.BaseRequestOptions();
-        options.responseType = http_1.ResponseContentType.ArrayBuffer;
+        var options = new BaseRequestOptions();
+        options.responseType = ResponseContentType.ArrayBuffer;
         return new Promise(function (resolve, reject) {
             _this.http.get(sample.fileName, options)
                 .map(function (response) {
@@ -117,8 +113,8 @@ var DrumPCMTriggeringService = (function () {
     return DrumPCMTriggeringService;
 }());
 DrumPCMTriggeringService = __decorate([
-    core_1.Injectable(),
-    __metadata("design:paramtypes", [http_1.Http])
+    Injectable(),
+    __metadata("design:paramtypes", [Http])
 ], DrumPCMTriggeringService);
-exports.DrumPCMTriggeringService = DrumPCMTriggeringService;
+export { DrumPCMTriggeringService };
 //# sourceMappingURL=drum-pcm-triggering.service.js.map

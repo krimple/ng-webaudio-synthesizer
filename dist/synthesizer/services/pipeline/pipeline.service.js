@@ -1,4 +1,3 @@
-"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,58 +7,87 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-var improved_midi_input_service_1 = require("./inputs/improved-midi-input.service");
-var synthesis_service_1 = require("./synthesis/synthesis.service");
-var audio_output_service_1 = require("./outputs/audio-output.service");
-var core_1 = require("@angular/core");
+import { MidiInputService } from './inputs/midi-input.service';
+import { SynthesisService } from './synthesis/synthesis.service';
+import { AudioOutputService } from './outputs/audio-output.service';
+import { Injectable } from '@angular/core';
 // TODO see if this is a problem - otherwise revert to rxjs
-var Subject_1 = require("rxjs/Subject");
-var drum_pcm_triggering_service_1 = require("./synthesis/drum-pcm-triggering.service");
-var midi_note_service_1 = require("./synthesis/midi-note.service");
-var note_input_service_1 = require("./inputs/note-input.service");
+import { Subject } from 'rxjs/Subject';
+import { DrumPCMTriggeringService } from './synthesis/drum-pcm-triggering.service';
+import { MidiNoteService, Note } from './synthesis/midi-note.service';
+import { NoteInputService } from './inputs/note-input.service';
+import { ReplaySubject } from 'rxjs';
+import { DrumMachineInputService } from './inputs/drum-machine-input.service';
+export var PipelineServiceEvents;
+(function (PipelineServiceEvents) {
+    PipelineServiceEvents[PipelineServiceEvents["CONNECTED"] = 0] = "CONNECTED";
+    PipelineServiceEvents[PipelineServiceEvents["DISCONNECTED"] = 1] = "DISCONNECTED";
+})(PipelineServiceEvents || (PipelineServiceEvents = {}));
 var PipelineService = (function () {
-    function PipelineService(midiNoteService, improvedMidiInputService, noteInputService, synthesisService, audioOutputService, drumPCMTriggeringService) {
+    // imagine a world where the injector could actually inject
+    // a typed subject that is configured by a factory!  2/3 of this
+    // code would not need to exist!!! ng team needs to simplify
+    // DI in Angular 2+ and make it easier to create injectable objects of generic types
+    // OR, heck, I have a silly bug and hubris aplenty (which is likely)
+    function PipelineService(midiNoteService, midiInputService, drumMachineInputService, noteInputService, synthesisService, audioOutputService, drumPCMTriggeringService) {
         this.midiNoteService = midiNoteService;
-        this.improvedMidiInputService = improvedMidiInputService;
+        this.midiInputService = midiInputService;
+        this.drumMachineInputService = drumMachineInputService;
         this.noteInputService = noteInputService;
         this.synthesisService = synthesisService;
         this.audioOutputService = audioOutputService;
         this.drumPCMTriggeringService = drumPCMTriggeringService;
+        // this is ridiculous - I can't use a factory or value to
+        // create this in an injector. Seems to be because it is
+        // not able to introspect the right type metadata at runtime
+        // so for NOW, I will configure streams manually
+        this.synthStream$ = new ReplaySubject();
         // TODO make protected by synthesized getter again
-        this.synthStream$ = new Subject_1.Subject();
+        this.serviceEvents$ = new Subject();
         this.audioContext = new AudioContext();
     }
+    PipelineService.prototype.sendSynthMessage = function (message) {
+        this.synthStream$.next(message);
+    };
     PipelineService.prototype.begin = function () {
-        var self = this;
         // setup outputs
-        this.audioOutputService.setup(this.audioContext, this.synthStream$);
-        midi_note_service_1.Note.configure(this.audioContext, this.audioOutputService.mainMixCompressor);
-        this.midiNoteService.configure(this.audioContext, this.audioOutputService.mainMixCompressor);
-        this.synthesisService.setup(this.audioContext, this.audioOutputService.mainMixCompressor);
+        this.audioOutputService.setup(this.synthStream$, this.audioContext);
+        // set up note processing oscillator hooks
+        Note.configure(this.audioContext, this.audioOutputService.mainMixCompressor);
+        this.midiNoteService.setup(this.audioContext, this.audioOutputService.mainMixCompressor);
+        // set up the synthesis engine itself
+        this.synthesisService.setup(this.synthStream$, this.audioContext, this.audioOutputService.mainMixCompressor);
         // setup drum service
-        this.drumPCMTriggeringService.setup(this.audioContext, this.audioOutputService.mainMixCompressor, this.synthStream$);
-        // setup inputs
-        this.improvedMidiInputService.setup(this.synthStream$);
+        this.drumPCMTriggeringService.setup(this.synthStream$, this.audioContext, this.audioOutputService.mainMixCompressor);
+        // enable audio
+        this.audioOutputService.begin();
+        // wire inputs
+        this.drumMachineInputService.setup(this.synthStream$);
+        this.midiInputService.setup(this.synthStream$);
         this.noteInputService.setup(this.synthStream$);
-        // now send all note inputs coming from midi and non-midi sources (web page components, etc)
-        this.synthStream$.subscribe(function (message) {
-            self.synthesisService.receiveMessage(message);
-        });
+        // // now send all note inputs coming from midi and non-midi sources (web page components, etc)
+        // this.synthStream$.subscribe(
+        //   (message: SynthMessage) => {
+        //     this.synthesisService.receiveMessage(message);
+        //   }
+        // );
     };
     PipelineService.prototype.end = function () {
-        // TODO - disconnect
+        this.midiInputService.endMidiInput();
+        this.noteInputService.end();
+        this.audioOutputService.end();
     };
     return PipelineService;
 }());
 PipelineService = __decorate([
-    core_1.Injectable(),
-    __metadata("design:paramtypes", [midi_note_service_1.MidiNoteService,
-        improved_midi_input_service_1.ImprovedMidiInputService,
-        note_input_service_1.NoteInputService,
-        synthesis_service_1.SynthesisService,
-        audio_output_service_1.AudioOutputService,
-        drum_pcm_triggering_service_1.DrumPCMTriggeringService])
+    Injectable(),
+    __metadata("design:paramtypes", [MidiNoteService,
+        MidiInputService,
+        DrumMachineInputService,
+        NoteInputService,
+        SynthesisService,
+        AudioOutputService,
+        DrumPCMTriggeringService])
 ], PipelineService);
-exports.PipelineService = PipelineService;
+export { PipelineService };
 //# sourceMappingURL=pipeline.service.js.map

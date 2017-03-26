@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,14 +8,13 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
 var SynthMessage = (function () {
     function SynthMessage(action) {
         this.action = action;
     }
     return SynthMessage;
 }());
-exports.SynthMessage = SynthMessage;
+export { SynthMessage };
 var SynthNoteMessage = (function (_super) {
     __extends(SynthNoteMessage, _super);
     function SynthNoteMessage(note, action) {
@@ -26,7 +24,7 @@ var SynthNoteMessage = (function (_super) {
     }
     return SynthNoteMessage;
 }(SynthMessage));
-exports.SynthNoteMessage = SynthNoteMessage;
+export { SynthNoteMessage };
 var SynthNoteOn = (function (_super) {
     __extends(SynthNoteOn, _super);
     function SynthNoteOn(note) {
@@ -34,7 +32,7 @@ var SynthNoteOn = (function (_super) {
     }
     return SynthNoteOn;
 }(SynthNoteMessage));
-exports.SynthNoteOn = SynthNoteOn;
+export { SynthNoteOn };
 var SynthNoteOff = (function (_super) {
     __extends(SynthNoteOff, _super);
     function SynthNoteOff(note) {
@@ -42,7 +40,7 @@ var SynthNoteOff = (function (_super) {
     }
     return SynthNoteOff;
 }(SynthNoteMessage));
-exports.SynthNoteOff = SynthNoteOff;
+export { SynthNoteOff };
 var TriggerSample = (function (_super) {
     __extends(TriggerSample, _super);
     function TriggerSample(instrument, velocity) {
@@ -53,7 +51,7 @@ var TriggerSample = (function (_super) {
     }
     return TriggerSample;
 }(SynthMessage));
-exports.TriggerSample = TriggerSample;
+export { TriggerSample };
 var ClockTick = (function (_super) {
     __extends(ClockTick, _super);
     function ClockTick() {
@@ -61,7 +59,7 @@ var ClockTick = (function (_super) {
     }
     return ClockTick;
 }(SynthMessage));
-exports.ClockTick = ClockTick;
+export { ClockTick };
 var SynthControlMessage = (function (_super) {
     __extends(SynthControlMessage, _super);
     function SynthControlMessage() {
@@ -69,7 +67,7 @@ var SynthControlMessage = (function (_super) {
     }
     return SynthControlMessage;
 }(SynthMessage));
-exports.SynthControlMessage = SynthControlMessage;
+export { SynthControlMessage };
 var VolumeChange = (function (_super) {
     __extends(VolumeChange, _super);
     function VolumeChange(level) {
@@ -80,7 +78,7 @@ var VolumeChange = (function (_super) {
     }
     return VolumeChange;
 }(SynthControlMessage));
-exports.VolumeChange = VolumeChange;
+export { VolumeChange };
 var WaveformChange = (function (_super) {
     __extends(WaveformChange, _super);
     function WaveformChange(rawValue) {
@@ -106,5 +104,5 @@ var WaveformChange = (function (_super) {
     }
     return WaveformChange;
 }(SynthControlMessage));
-exports.WaveformChange = WaveformChange;
+export { WaveformChange };
 //# sourceMappingURL=synth-note-message.js.map

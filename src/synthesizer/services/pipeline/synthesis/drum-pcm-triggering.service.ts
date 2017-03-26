@@ -2,19 +2,18 @@ import { Injectable } from '@angular/core';
 import { Http, Response, BaseRequestOptions, ResponseContentType } from '@angular/http';
 import {Sample, SynthMessage, TriggerSample} from '../../../models';
 import {Subject} from 'rxjs';
-
 @Injectable()
 export class DrumPCMTriggeringService {
 
-  public samples: any;
-  public synthStream$ = new Subject<SynthMessage>();
+  private samples: any;
+  private synthStream$: Subject<SynthMessage>;
 
-  constructor(private http: Http) {
-  }
+  constructor(private http: Http) { }
 
-  setup(context: AudioContext, targetNode: AudioNode, synthStream$: Subject<SynthMessage>) {
+  setup(synthStream$: Subject<SynthMessage>, context: AudioContext, targetNode: AudioNode) {
       const self = this;
-      self.synthStream$ = synthStream$;
+
+      this.synthStream$ = synthStream$;
 
       self.samples = {
           bass: new Sample('assets/drums/bass-thud.wav'),
