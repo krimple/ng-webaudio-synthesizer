@@ -1,7 +1,7 @@
 {
   "name": "ng-webaudio-synthesizer",
   "module": "index.js",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A web synthesizer for Angular, based on RxJS",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -30,6 +30,8 @@
     "zone.js": "^0.7.8"
   },
   "devDependencies": {
-    "rimraf": "^2.6.1"
+    "tslint": "^4.5.1",
+    "rimraf": "^2.6.1",
+    "codelyzer": "^3.0.0-beta.4"
   }
 }

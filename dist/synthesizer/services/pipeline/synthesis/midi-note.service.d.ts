@@ -1,7 +1,8 @@
-import { WaveformChange } from '../../../models/synth-note-message';
+import { Subject } from 'rxjs';
+import { SynthMessage } from '../../../models/synth-note-message';
 export declare class MidiNoteService {
     private notes;
-    setup(audioContext: AudioContext, audioBus: AudioNode): void;
+    setup(audioContext: AudioContext, synthStream$: Subject<SynthMessage>, audioBus: AudioNode): void;
     playNoteByMidiNoteNumber(noteNumber: any): void;
     stopNoteByMidiNoteNumber(noteNumber: any): void;
     playNoteByNoteValue(noteValueString: string): void;
@@ -12,21 +13,21 @@ export declare class Note {
     private frequency;
     static context: AudioContext;
     private static audioBus;
-    private static controlPanelDataChanges$;
-    private static waveform;
-    private stopWatcher$;
+    private static synthStream$;
+    private static midiNoteNumberCtr;
+    private oscillator;
+    private subscriptions;
+    private midiNoteNumber;
+    private waveform;
     private gainNode;
-    private startingVolume;
-    private playingSince;
-    static configure(context: AudioContext, audioBus: AudioNode): void;
-    static changeWaveform(waveform: WaveformChange): void;
+    private volume;
+    private attack;
+    private sustain;
+    private decay;
+    private release;
+    static configure(context: AudioContext, synthStream: Subject<SynthMessage>, audioBus: AudioNode): void;
     constructor(noteValues: string[], frequency: number);
-    private getNewOscillator();
+    private createOscillator();
     noteOn(): void;
     noteOff(): void;
-}
-export declare class ControlPanelData {
-    waveForm: string;
-    volume: number;
-    constructor();
 }
