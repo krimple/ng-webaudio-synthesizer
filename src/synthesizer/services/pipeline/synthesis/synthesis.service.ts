@@ -43,27 +43,9 @@ export class SynthesisService {
       .filter((message: SynthMessage) => !(message instanceof TriggerSample))
       .subscribe(
         (message: SynthMessage) => {
-          if (message instanceof SynthNoteOn) {
-            if (typeof message.note === 'number') {
-              this.midiNoteService.playNoteByMidiNoteNumber(message.note);
-            } else {
-              this.midiNoteService.playNoteByNoteValue(message.note);
-            }
-            // TODO restore this
-          } else if (message instanceof ClockTick) {
+          if (message instanceof ClockTick) {
               console.log('pulse!');
               self.clockTick();
-          } else if (message instanceof SynthNoteOff) {
-            if (typeof message.note === 'number') {
-              this.midiNoteService.stopNoteByMidiNoteNumber(message.note);
-            } else {
-              this.midiNoteService.stopNoteByNoteValue(message.note);
-            }
-          } else if (message instanceof WaveformChange) {
-            console.log('new waveform value is ', message.waveForm);
-            Note.changeWaveform(message);
-          } else {
-            console.log('unknown message', JSON.stringify(message));
           }
         }
       );

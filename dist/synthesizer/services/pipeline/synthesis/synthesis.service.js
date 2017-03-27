@@ -8,8 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { Injectable } from '@angular/core';
-import { SynthNoteOff, SynthNoteOn, WaveformChange } from '../../../models';
-import { MidiNoteService, Note } from './midi-note.service';
+import { MidiNoteService } from './midi-note.service';
 import { ClockTick, TriggerSample } from '../../../models/synth-note-message';
 var SynthesisService = (function () {
     function SynthesisService(midiNoteService) {
@@ -28,38 +27,13 @@ var SynthesisService = (function () {
         this.synthStream$.next(message);
     };
     SynthesisService.prototype.setupSubscriptions = function () {
-        var _this = this;
         var self = this;
         this.synthStream$
             .filter(function (message) { return !(message instanceof TriggerSample); })
             .subscribe(function (message) {
-            if (message instanceof SynthNoteOn) {
-                if (typeof message.note === 'number') {
-                    _this.midiNoteService.playNoteByMidiNoteNumber(message.note);
-                }
-                else {
-                    _this.midiNoteService.playNoteByNoteValue(message.note);
-                }
-                // TODO restore this
-            }
-            else if (message instanceof ClockTick) {
+            if (message instanceof ClockTick) {
                 console.log('pulse!');
                 self.clockTick();
-            }
-            else if (message instanceof SynthNoteOff) {
-                if (typeof message.note === 'number') {
-                    _this.midiNoteService.stopNoteByMidiNoteNumber(message.note);
-                }
-                else {
-                    _this.midiNoteService.stopNoteByNoteValue(message.note);
-                }
-            }
-            else if (message instanceof WaveformChange) {
-                console.log('new waveform value is ', message.waveForm);
-                Note.changeWaveform(message);
-            }
-            else {
-                console.log('unknown message', JSON.stringify(message));
             }
         });
     };

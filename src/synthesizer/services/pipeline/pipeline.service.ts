@@ -58,8 +58,8 @@ export class PipelineService {
     this.audioOutputService.setup(this.synthStream$, this.audioContext);
 
     // set up note processing oscillator hooks
-    Note.configure(this.audioContext, this.audioOutputService.mainMixCompressor);
-    this.midiNoteService.setup(this.audioContext, this.audioOutputService.mainMixCompressor);
+    Note.configure(this.audioContext, this.synthStream$, this.audioOutputService.mainMixCompressor);
+    this.midiNoteService.setup(this.audioContext, this.synthStream$, this.audioOutputService.mainMixCompressor);
 
     // set up the synthesis engine itself
     this.synthesisService.setup(this.synthStream$, this.audioContext, this.audioOutputService.mainMixCompressor);
