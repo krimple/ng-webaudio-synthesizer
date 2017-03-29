@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Injectable, NgZone } from '@angular/core';
 import { SynthNoteOff, SynthNoteOn, VolumeChange, WaveformChange, TriggerSample } from '../../../models';
-import { Http } from "@angular/http";
+import { Http } from '@angular/http';
 export var MidiServiceStates;
 (function (MidiServiceStates) {
     MidiServiceStates[MidiServiceStates["ACTIVE"] = 0] = "ACTIVE";
@@ -21,7 +21,6 @@ var MidiInputService = (function () {
         this.http = http;
         this._state = MidiServiceStates.INACTIVE;
         this.subscriptions = [];
-        console.log("Synth stream created");
     }
     Object.defineProperty(MidiInputService.prototype, "state", {
         get: function () {

@@ -1,13 +1,12 @@
-import { ReplaySubject, Subject } from 'rxjs';
-import { Inject, Injectable, NgZone } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import { Injectable, NgZone } from '@angular/core';
 
 import {
   SynthNoteOff, SynthNoteOn,
   VolumeChange, SynthMessage,
   WaveformChange, TriggerSample
 } from '../../../models';
-import { Http } from "@angular/http";
-import { SynthStreamWrapper } from '../../synth-stream-wrapper';
+import { Http } from '@angular/http';
 
 declare const navigator: any;
 
@@ -26,9 +25,7 @@ export class MidiInputService {
   private subscriptions: any[] = [];
 
 
-  constructor(private zone: NgZone, private http: Http) {
-    console.log("Synth stream created");
-  }
+  constructor(private zone: NgZone, private http: Http) { }
 
   setup(synthStream$: Subject<SynthMessage>) {
     this.synthStream$ = synthStream$;

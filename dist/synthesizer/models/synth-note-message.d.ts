@@ -1,32 +1,27 @@
 export declare class SynthMessage {
-    readonly action: string;
-    constructor(action: any);
 }
-export declare class SynthNoteMessage extends SynthMessage {
-    readonly note: string;
-    constructor(note: any, action: any);
+export declare class SynthNoteMessage implements SynthMessage {
+    readonly note: number | string;
+    constructor(note: number | string);
 }
 export declare class SynthNoteOn extends SynthNoteMessage {
-    constructor(note: string);
 }
 export declare class SynthNoteOff extends SynthNoteMessage {
-    constructor(note: string);
 }
-export declare class TriggerSample extends SynthMessage {
+export declare class TriggerSample implements SynthMessage {
     instrument: string;
     velocity: number;
     constructor(instrument: string, velocity: number);
 }
-export declare class ClockTick extends SynthMessage {
-    constructor();
+export declare class ClockTick implements SynthMessage {
 }
-export declare class SynthControlMessage extends SynthMessage {
+export declare class SynthControlMessage implements SynthMessage {
 }
-export declare class VolumeChange extends SynthControlMessage {
+export declare class VolumeChange implements SynthControlMessage {
     level: number;
     constructor(level: number);
 }
-export declare class WaveformChange extends SynthControlMessage {
+export declare class WaveformChange implements SynthControlMessage {
     rawValue: number;
     waveForm: string;
     constructor(rawValue: number);

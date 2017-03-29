@@ -3,10 +3,10 @@ import { SynthMessage } from '../../../models/synth-note-message';
 export declare class MidiNoteService {
     private notes;
     setup(audioContext: AudioContext, synthStream$: Subject<SynthMessage>, audioBus: AudioNode): void;
-    playNoteByMidiNoteNumber(noteNumber: any): void;
-    stopNoteByMidiNoteNumber(noteNumber: any): void;
-    playNoteByNoteValue(noteValueString: string): void;
-    stopNoteByNoteValue(noteValueString: string): void;
+}
+export declare enum NoteState {
+    PLAYING = 0,
+    STOPPED = 1,
 }
 export declare class Note {
     noteValues: string[];
@@ -16,7 +16,9 @@ export declare class Note {
     private static synthStream$;
     private static midiNoteNumberCtr;
     private oscillator;
+    private stopWatcher$;
     private subscriptions;
+    private state;
     private midiNoteNumber;
     private waveform;
     private gainNode;
@@ -27,7 +29,5 @@ export declare class Note {
     private release;
     static configure(context: AudioContext, synthStream: Subject<SynthMessage>, audioBus: AudioNode): void;
     constructor(noteValues: string[], frequency: number);
-    private createOscillator();
     noteOn(): void;
-    noteOff(): void;
 }

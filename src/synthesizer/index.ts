@@ -3,12 +3,12 @@ export {QuantizerService} from './services/pipeline/processors/quantizer.service
 export {SequencerService} from './services/pipeline/processors/sequencer.service';
 export {AudioOutputService} from './services/pipeline/outputs/audio-output.service';
 export {DrumPCMTriggeringService} from './services/pipeline/synthesis/drum-pcm-triggering.service';
-export {SynthesisService} from './services/pipeline/synthesis/synthesis.service';
 export {PipelineService} from './services/pipeline/pipeline.service';
 export {MidiInputService} from './services/pipeline/inputs/midi-input.service';
 export {NoteInputService} from './services/pipeline/inputs/note-input.service';
 export {DrumMachineInputService, DrumTrigger} from './services/pipeline/inputs/drum-machine-input.service';
-export {TriggerSample, Sample, StreamEvent, SynthControlMessage, SynthNoteMessage, SynthNoteOn, SynthNoteOff, VolumeChange, WaveformChange} from './models';
+export {TriggerSample, Sample, StreamEvent, SynthControlMessage,
+        SynthNoteMessage, SynthNoteOn, SynthNoteOff, VolumeChange, WaveformChange} from './models';
 export {SynthesizerModule } from './synthesizer.module';
 export {SynthStreamWrapper} from './services/synth-stream-wrapper';
 

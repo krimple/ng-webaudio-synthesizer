@@ -16,12 +16,17 @@ var NoteInputService = (function () {
     NoteInputService.prototype.begin = function () {
         this.enabled = true;
     };
-    NoteInputService.prototype.emitNote = function (noteValue) {
+    NoteInputService.prototype.emitNoteByNoteNumber = function (noteValue) {
         if (this.enabled) {
             this.synthStream$.next(new SynthNoteOn(noteValue));
         }
         else {
             console.log('cannot send notes. Service is disabled');
+        }
+    };
+    NoteInputService.prototype.emitNoteByName = function (noteName) {
+        if (this.enabled) {
+            this.synthStream$.next(new SynthNoteOn(noteName));
         }
     };
     NoteInputService.prototype.end = function () {

@@ -117,33 +117,9 @@ export class MidiNoteService {
       new Note(['F8'], 5587.652)
     ];
  }
-
-  playNoteByMidiNoteNumber(noteNumber) {
-    this.notes[noteNumber].noteOn();
-  }
-
-  stopNoteByMidiNoteNumber(noteNumber) {
-    this.notes[noteNumber].noteOff();
-  }
-
-  playNoteByNoteValue(noteValueString: string) {
-    const note: Note = this.notes.find((theNote: Note) => {
-      return (theNote.noteValues.findIndex((noteValue: string) => noteValue === noteValueString) > -1);
-    });
-    if (note) {
-      note.noteOn();
-    }
-  }
-
-  stopNoteByNoteValue(noteValueString: string) {
-    const note: Note = this.notes.find((theNote: Note) => {
-      return (theNote.noteValues.findIndex((noteValue: string) => noteValue === noteValueString) > -1);
-    });
-    if (note) {
-      note.noteOff();
-    }
-  }
 }
+
+export enum NoteState { PLAYING, STOPPED }
 
 export class Note {
   public static context: AudioContext;
@@ -152,8 +128,10 @@ export class Note {
   private static midiNoteNumberCtr = 0;
   private oscillator: OscillatorNode;
 
+  private stopWatcher$: Subject<void> = new Subject<void>();
 
   private subscriptions: Subscription[] = [];
+  private state: NoteState = NoteState.STOPPED;
 
   // for any notes that are fired, here's the message to stop them
   private midiNoteNumber: number;
@@ -186,18 +164,11 @@ export class Note {
     this.subscriptions.push(Note.synthStream$
       .filter((message: SynthMessage) =>
          message instanceof SynthNoteOn &&
-         parseFloat((<SynthNoteOn>message).note) === this.midiNoteNumber)
+         (<SynthNoteOn>message).note === this.midiNoteNumber ||
+          this.noteValues.indexOf(<string>((<SynthNoteOn>message).note)) > -1)
       .subscribe((message: SynthNoteOn) => {
-        this.noteOn();
-      }));
-
-    this.subscriptions.push(Note.synthStream$
-      .filter((message: SynthMessage) =>
-         message instanceof SynthNoteOff &&
-         parseFloat((<SynthNoteOn>message).note) === this.midiNoteNumber)
-      .subscribe((message: SynthNoteOff) => {
-          this.noteOff();
-      }));
+          console.log(`starting MIDI NOTE ${message.note}`);
+          this.noteOn(); }));
 
     this.subscriptions.push(Note.synthStream$
       .filter((message: SynthMessage) => message instanceof WaveformChange)
@@ -208,33 +179,61 @@ export class Note {
     this.subscriptions.push(Note.synthStream$
       .filter((message: SynthMessage) => message instanceof VolumeChange)
       .subscribe((volumeChange: VolumeChange) => {
-        this.gainNode.gain.value = volumeChange.level;
+        this.volume = volumeChange.level;
+        if (this.state === NoteState.PLAYING) {
+          this.gainNode.gain.value = this.volume;
+        }
     }));
   }
 
-  private createOscillator(): void {
-    this.gainNode = Note.context.createGain();
-    this.oscillator = Note.context.createOscillator();
-    this.oscillator.type = this.waveform;
-    this.oscillator.frequency.value = this.frequency;
-    this.oscillator.connect(this.gainNode);
-    this.gainNode.connect(Note.audioBus);
-    this.gainNode.gain.value = 0;
-  }
-
   noteOn() {
-    const now = Note.context.currentTime;
-    this.createOscillator();
-    this.oscillator.start(0);
+    setTimeout(() => {
+      const now = Note.context.currentTime;
+      new ToneWorker(this.frequency, this.waveform, now,
+        this.volume, this.attack, this.sustain, this.decay, Note.audioBus, this.stopWatcher$);
 
-    // attack
-    this.gainNode.gain.linearRampToValueAtTime(this.volume, now + this.attack);
-    this.gainNode.gain.setTargetAtTime(this.volume / 2, now + this.attack + this.sustain, 0.5);
-  }
-
-  noteOff() {
-    const now = Note.context.currentTime;
-    this.gainNode.gain.setTargetAtTime(0, now + this.attack + this.sustain + this.decay, 0.5);
+      // subscribe to note off and stop oscillation
+      Note.synthStream$
+        .filter((message: SynthMessage) =>
+        message instanceof SynthNoteOff &&
+        (<SynthNoteOff>message).note === this.midiNoteNumber ||
+        this.noteValues.indexOf(<string>((<SynthNoteOff>message).note)) > -1)
+        .subscribe((message: SynthNoteOff) => {
+          this.stopWatcher$.next();
+        });
+    }, 0);
   }
 }
 
+class ToneWorker {
+  constructor(frequency: number,
+              waveform: string,
+              startTime: number,
+              volume: number,
+              attack: number,
+              sustain: number,
+              decay: number,
+              outputBus: AudioNode,
+              private stopWatcher$: Observable<void>) {
+    const oscillator: OscillatorNode = Note.context.createOscillator();
+    oscillator.frequency.value = frequency;
+    oscillator.type = waveform;
+
+    const gainNode: GainNode = Note.context.createGain();
+    gainNode.gain.value = 0.2;
+    gainNode.connect(outputBus);
+    oscillator.connect(gainNode);
+    oscillator.frequency.value = frequency;
+    oscillator.start(0);
+    // attack
+    gainNode.gain.linearRampToValueAtTime(volume, startTime + attack);
+    gainNode.gain.setTargetAtTime(volume / 2, startTime + attack + sustain, 0.5);
+
+    const subscription: Subscription = stopWatcher$.subscribe(() => {
+      const now = Note.context.currentTime;
+      gainNode.gain.cancelScheduledValues(0);
+      gainNode.gain.setTargetAtTime(0, now + decay, 0.5);
+      subscription.unsubscribe();
+    });
+  }
+}

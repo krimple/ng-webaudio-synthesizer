@@ -1,13 +1,14 @@
-import { Inject, Injectable } from '@angular/core';
-import { Subject } from "rxjs/Subject";
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 import { SynthMessage, SynthNoteOn } from '../../../models/synth-note-message';
-import { SynthStreamWrapper } from '../../synth-stream-wrapper';
+import { NoteTranslationService } from '../processors/note-translation.service';
 
 @Injectable()
 export class NoteInputService {
 
   private enabled = false;
   private synthStream$: Subject<SynthMessage>;
+  private noteTranslationService: NoteTranslationService;
 
   setup(synthStream$: Subject<SynthMessage>) {
     this.synthStream$ = synthStream$;
@@ -17,7 +18,7 @@ export class NoteInputService {
     this.enabled = true;
   }
 
-  emitNote(noteValue: string) {
+  emitNoteByNoteNumber(noteValue: number) {
     if (this.enabled) {
       this.synthStream$.next(new SynthNoteOn(noteValue));
     } else {
@@ -25,6 +26,12 @@ export class NoteInputService {
     }
   }
 
+  emitNoteByName(noteName: string) {
+
+    if (this.enabled) {
+      this.synthStream$.next(new SynthNoteOn(noteName));
+    }
+  }
   end() {
     this.enabled = false;
   }

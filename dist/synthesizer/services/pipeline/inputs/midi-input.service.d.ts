@@ -1,7 +1,7 @@
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs/Subject';
 import { NgZone } from '@angular/core';
 import { SynthMessage } from '../../../models';
-import { Http } from "@angular/http";
+import { Http } from '@angular/http';
 export declare enum MidiServiceStates {
     ACTIVE = 0,
     INACTIVE = 1,

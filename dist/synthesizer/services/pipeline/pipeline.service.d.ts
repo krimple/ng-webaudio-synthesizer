@@ -1,5 +1,4 @@
 import { MidiInputService } from './inputs/midi-input.service';
-import { SynthesisService } from './synthesis/synthesis.service';
 import { AudioOutputService } from './outputs/audio-output.service';
 import { Subject } from 'rxjs/Subject';
 import { DrumPCMTriggeringService } from './synthesis/drum-pcm-triggering.service';
@@ -16,13 +15,12 @@ export declare class PipelineService {
     private midiInputService;
     private drumMachineInputService;
     private noteInputService;
-    private synthesisService;
     private audioOutputService;
     private drumPCMTriggeringService;
     private audioContext;
     private synthStream$;
     readonly serviceEvents$: Subject<PipelineServiceEvents>;
-    constructor(midiNoteService: MidiNoteService, midiInputService: MidiInputService, drumMachineInputService: DrumMachineInputService, noteInputService: NoteInputService, synthesisService: SynthesisService, audioOutputService: AudioOutputService, drumPCMTriggeringService: DrumPCMTriggeringService);
+    constructor(midiNoteService: MidiNoteService, midiInputService: MidiInputService, drumMachineInputService: DrumMachineInputService, noteInputService: NoteInputService, audioOutputService: AudioOutputService, drumPCMTriggeringService: DrumPCMTriggeringService);
     sendSynthMessage(message: SynthMessage): void;
     begin(): void;
     end(): void;
