@@ -9,100 +9,83 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 var SynthMessage = (function () {
-    function SynthMessage(action) {
-        this.action = action;
+    function SynthMessage() {
     }
     return SynthMessage;
 }());
 export { SynthMessage };
-var SynthNoteMessage = (function (_super) {
-    __extends(SynthNoteMessage, _super);
-    function SynthNoteMessage(note, action) {
-        var _this = _super.call(this, action) || this;
-        _this.note = note;
-        return _this;
+var SynthNoteMessage = (function () {
+    function SynthNoteMessage(note) {
+        this.note = note;
     }
     return SynthNoteMessage;
-}(SynthMessage));
+}());
 export { SynthNoteMessage };
 var SynthNoteOn = (function (_super) {
     __extends(SynthNoteOn, _super);
-    function SynthNoteOn(note) {
-        return _super.call(this, note, 'ON') || this;
+    function SynthNoteOn() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return SynthNoteOn;
 }(SynthNoteMessage));
 export { SynthNoteOn };
 var SynthNoteOff = (function (_super) {
     __extends(SynthNoteOff, _super);
-    function SynthNoteOff(note) {
-        return _super.call(this, note, 'OFF') || this;
+    function SynthNoteOff() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return SynthNoteOff;
 }(SynthNoteMessage));
 export { SynthNoteOff };
-var TriggerSample = (function (_super) {
-    __extends(TriggerSample, _super);
+var TriggerSample = (function () {
     function TriggerSample(instrument, velocity) {
-        var _this = _super.call(this, 'SAMPLE!') || this;
-        _this.instrument = instrument;
-        _this.velocity = velocity;
-        return _this;
+        this.instrument = instrument;
+        this.velocity = velocity;
     }
     return TriggerSample;
-}(SynthMessage));
+}());
 export { TriggerSample };
-var ClockTick = (function (_super) {
-    __extends(ClockTick, _super);
+var ClockTick = (function () {
     function ClockTick() {
-        return _super.call(this, 'TICK') || this;
     }
     return ClockTick;
-}(SynthMessage));
+}());
 export { ClockTick };
-var SynthControlMessage = (function (_super) {
-    __extends(SynthControlMessage, _super);
+var SynthControlMessage = (function () {
     function SynthControlMessage() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
     return SynthControlMessage;
-}(SynthMessage));
+}());
 export { SynthControlMessage };
-var VolumeChange = (function (_super) {
-    __extends(VolumeChange, _super);
+var VolumeChange = (function () {
     function VolumeChange(level) {
-        var _this = _super.call(this, 'VOLUME') || this;
         // hack due to arduino stupidity kenny
-        _this.level = Math.min(level / 127.0);
-        return _this;
+        this.level = Math.min(level / 127.0);
     }
     return VolumeChange;
-}(SynthControlMessage));
+}());
 export { VolumeChange };
-var WaveformChange = (function (_super) {
-    __extends(WaveformChange, _super);
+var WaveformChange = (function () {
     function WaveformChange(rawValue) {
-        var _this = _super.call(this, 'WAVEFORM') || this;
-        _this.rawValue = rawValue;
+        this.rawValue = rawValue;
         switch (rawValue) {
             case 0:
-                _this.waveForm = 'sawtooth';
+                this.waveForm = 'sawtooth';
                 break;
             case 1:
-                _this.waveForm = 'sine';
+                this.waveForm = 'sine';
                 break;
             case 2:
-                _this.waveForm = 'triangle';
+                this.waveForm = 'triangle';
                 break;
             case 3:
-                _this.waveForm = 'square';
+                this.waveForm = 'square';
                 break;
             default:
-                _this.waveForm = 'sawtooth';
+                this.waveForm = 'sawtooth';
         }
-        return _this;
     }
     return WaveformChange;
-}(SynthControlMessage));
+}());
 export { WaveformChange };
 //# sourceMappingURL=synth-note-message.js.map

@@ -4,6 +4,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+import { Subject } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { SynthNoteOff, SynthNoteOn, VolumeChange, WaveformChange } from '../../../models/synth-note-message';
 var MidiNoteService = (function () {
@@ -116,40 +117,25 @@ var MidiNoteService = (function () {
             new Note(['F8'], 5587.652)
         ];
     };
-    MidiNoteService.prototype.playNoteByMidiNoteNumber = function (noteNumber) {
-        this.notes[noteNumber].noteOn();
-    };
-    MidiNoteService.prototype.stopNoteByMidiNoteNumber = function (noteNumber) {
-        this.notes[noteNumber].noteOff();
-    };
-    MidiNoteService.prototype.playNoteByNoteValue = function (noteValueString) {
-        var note = this.notes.find(function (theNote) {
-            return (theNote.noteValues.findIndex(function (noteValue) { return noteValue === noteValueString; }) > -1);
-        });
-        if (note) {
-            note.noteOn();
-        }
-    };
-    MidiNoteService.prototype.stopNoteByNoteValue = function (noteValueString) {
-        var note = this.notes.find(function (theNote) {
-            return (theNote.noteValues.findIndex(function (noteValue) { return noteValue === noteValueString; }) > -1);
-        });
-        if (note) {
-            note.noteOff();
-        }
-    };
     return MidiNoteService;
 }());
 MidiNoteService = __decorate([
     Injectable()
 ], MidiNoteService);
 export { MidiNoteService };
+export var NoteState;
+(function (NoteState) {
+    NoteState[NoteState["PLAYING"] = 0] = "PLAYING";
+    NoteState[NoteState["STOPPED"] = 1] = "STOPPED";
+})(NoteState || (NoteState = {}));
 var Note = (function () {
     function Note(noteValues, frequency) {
         var _this = this;
         this.noteValues = noteValues;
         this.frequency = frequency;
+        this.stopWatcher$ = new Subject();
         this.subscriptions = [];
+        this.state = NoteState.STOPPED;
         this.waveform = 'sine';
         this.volume = 0.2;
         // tone curve
@@ -167,18 +153,12 @@ var Note = (function () {
         this.subscriptions.push(Note.synthStream$
             .filter(function (message) {
             return message instanceof SynthNoteOn &&
-                parseFloat(message.note) === _this.midiNoteNumber;
+                message.note === _this.midiNoteNumber ||
+                _this.noteValues.indexOf((message.note)) > -1;
         })
             .subscribe(function (message) {
+            console.log("starting MIDI NOTE " + message.note);
             _this.noteOn();
-        }));
-        this.subscriptions.push(Note.synthStream$
-            .filter(function (message) {
-            return message instanceof SynthNoteOff &&
-                parseFloat(message.note) === _this.midiNoteNumber;
-        })
-            .subscribe(function (message) {
-            _this.noteOff();
         }));
         this.subscriptions.push(Note.synthStream$
             .filter(function (message) { return message instanceof WaveformChange; })
@@ -188,7 +168,10 @@ var Note = (function () {
         this.subscriptions.push(Note.synthStream$
             .filter(function (message) { return message instanceof VolumeChange; })
             .subscribe(function (volumeChange) {
-            _this.gainNode.gain.value = volumeChange.level;
+            _this.volume = volumeChange.level;
+            if (_this.state === NoteState.PLAYING) {
+                _this.gainNode.gain.value = _this.volume;
+            }
         }));
     }
     Note.configure = function (context, synthStream, audioBus) {
@@ -196,29 +179,49 @@ var Note = (function () {
         Note.audioBus = audioBus;
         Note.synthStream$ = synthStream;
     };
-    Note.prototype.createOscillator = function () {
-        this.gainNode = Note.context.createGain();
-        this.oscillator = Note.context.createOscillator();
-        this.oscillator.type = this.waveform;
-        this.oscillator.frequency.value = this.frequency;
-        this.oscillator.connect(this.gainNode);
-        this.gainNode.connect(Note.audioBus);
-        this.gainNode.gain.value = 0;
-    };
     Note.prototype.noteOn = function () {
-        var now = Note.context.currentTime;
-        this.createOscillator();
-        this.oscillator.start(0);
-        // attack
-        this.gainNode.gain.linearRampToValueAtTime(this.volume, now + this.attack);
-        this.gainNode.gain.setTargetAtTime(this.volume / 2, now + this.attack + this.sustain, 0.5);
-    };
-    Note.prototype.noteOff = function () {
-        var now = Note.context.currentTime;
-        this.gainNode.gain.setTargetAtTime(0, now + this.attack + this.sustain + this.decay, 0.5);
+        var _this = this;
+        setTimeout(function () {
+            var now = Note.context.currentTime;
+            new ToneWorker(_this.frequency, _this.waveform, now, _this.volume, _this.attack, _this.sustain, _this.decay, Note.audioBus, _this.stopWatcher$);
+            // subscribe to note off and stop oscillation
+            Note.synthStream$
+                .filter(function (message) {
+                return message instanceof SynthNoteOff &&
+                    message.note === _this.midiNoteNumber ||
+                    _this.noteValues.indexOf((message.note)) > -1;
+            })
+                .subscribe(function (message) {
+                _this.stopWatcher$.next();
+            });
+        }, 0);
     };
     return Note;
 }());
 export { Note };
 Note.midiNoteNumberCtr = 0;
+var ToneWorker = (function () {
+    function ToneWorker(frequency, waveform, startTime, volume, attack, sustain, decay, outputBus, stopWatcher$) {
+        this.stopWatcher$ = stopWatcher$;
+        var oscillator = Note.context.createOscillator();
+        oscillator.frequency.value = frequency;
+        oscillator.type = waveform;
+        var gainNode = Note.context.createGain();
+        gainNode.gain.value = 0.2;
+        gainNode.connect(outputBus);
+        oscillator.connect(gainNode);
+        oscillator.frequency.value = frequency;
+        oscillator.start(0);
+        // attack
+        gainNode.gain.linearRampToValueAtTime(volume, startTime + attack);
+        gainNode.gain.setTargetAtTime(volume / 2, startTime + attack + sustain, 0.5);
+        var subscription = stopWatcher$.subscribe(function () {
+            var now = Note.context.currentTime;
+            gainNode.gain.cancelScheduledValues(0);
+            gainNode.gain.setTargetAtTime(0, now + decay, 0.5);
+            subscription.unsubscribe();
+        });
+    }
+    return ToneWorker;
+}());
 //# sourceMappingURL=midi-note.service.js.map

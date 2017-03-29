@@ -1,10 +1,12 @@
-import { Subject } from "rxjs/Subject";
+import { Subject } from 'rxjs/Subject';
 import { SynthMessage } from '../../../models/synth-note-message';
 export declare class NoteInputService {
     private enabled;
     private synthStream$;
+    private noteTranslationService;
     setup(synthStream$: Subject<SynthMessage>): void;
     begin(): void;
-    emitNote(noteValue: string): void;
+    emitNoteByNoteNumber(noteValue: number): void;
+    emitNoteByName(noteName: string): void;
     end(): void;
 }

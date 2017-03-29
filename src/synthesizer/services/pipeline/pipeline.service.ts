@@ -1,5 +1,4 @@
 import { MidiInputService } from './inputs/midi-input.service';
-import { SynthesisService } from './synthesis/synthesis.service';
 import { AudioOutputService } from './outputs/audio-output.service';
 import { Inject, Injectable } from '@angular/core';
 
@@ -10,7 +9,6 @@ import { DrumPCMTriggeringService } from './synthesis/drum-pcm-triggering.servic
 import { MidiNoteService, Note } from './synthesis/midi-note.service';
 import { SynthMessage } from '../../models';
 import { NoteInputService } from './inputs/note-input.service';
-import { ReplaySubject } from 'rxjs';
 import { DrumMachineInputService } from './inputs/drum-machine-input.service';
 
 declare var AudioContext: any;
@@ -28,7 +26,7 @@ export class PipelineService {
   // create this in an injector. Seems to be because it is
   // not able to introspect the right type metadata at runtime
   // so for NOW, I will configure streams manually
-  private synthStream$ = new ReplaySubject<SynthMessage>();
+  private synthStream$ = new Subject<SynthMessage>();
 
   // TODO make protected by synthesized getter again
   readonly serviceEvents$ = new Subject<PipelineServiceEvents>();
@@ -42,7 +40,6 @@ export class PipelineService {
               private midiInputService: MidiInputService,
               private drumMachineInputService: DrumMachineInputService,
               private noteInputService: NoteInputService,
-              private synthesisService: SynthesisService,
               private audioOutputService: AudioOutputService,
               private drumPCMTriggeringService: DrumPCMTriggeringService) {
     this.audioContext = new AudioContext();
@@ -60,9 +57,6 @@ export class PipelineService {
     // set up note processing oscillator hooks
     Note.configure(this.audioContext, this.synthStream$, this.audioOutputService.mainMixCompressor);
     this.midiNoteService.setup(this.audioContext, this.synthStream$, this.audioOutputService.mainMixCompressor);
-
-    // set up the synthesis engine itself
-    this.synthesisService.setup(this.synthStream$, this.audioContext, this.audioOutputService.mainMixCompressor);
 
     // setup drum service
     this.drumPCMTriggeringService.setup(this.synthStream$, this.audioContext, this.audioOutputService.mainMixCompressor);

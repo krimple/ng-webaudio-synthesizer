@@ -1,64 +1,41 @@
-export class SynthMessage {
-  readonly action: string;
+export class SynthMessage {}
 
-  constructor(action) {
-    this.action = action;
-  }
-}
+export class SynthNoteMessage implements SynthMessage {
+  readonly note: number|string;
 
-export class SynthNoteMessage extends SynthMessage {
-  readonly note: string;
-
-  constructor(note, action) {
-    super(action);
+  constructor(note: number|string) {
     this.note = note;
   }
-
 }
 
-export class SynthNoteOn extends SynthNoteMessage {
-  constructor(note: string) {
-    super(note, 'ON');
-  }
-}
+export class SynthNoteOn extends SynthNoteMessage { }
 
-export class SynthNoteOff extends SynthNoteMessage {
-  constructor(note: string) {
-    super(note, 'OFF');
-  }
-}
+export class SynthNoteOff extends SynthNoteMessage { }
 
-export class TriggerSample extends SynthMessage {
+export class TriggerSample implements SynthMessage {
   public instrument: string;
   public velocity: number;
   constructor(instrument: string, velocity: number) {
-   super('SAMPLE!');
    this.instrument = instrument;
    this.velocity = velocity;
   }
 }
 
-export class ClockTick extends SynthMessage {
-  constructor() {
-    super('TICK');
-  }
-}
+export class ClockTick implements SynthMessage { }
 
-export class SynthControlMessage extends SynthMessage { }
+export class SynthControlMessage implements SynthMessage { }
 
-export class VolumeChange extends SynthControlMessage {
+export class VolumeChange implements SynthControlMessage {
   public level: number;
   constructor(level: number) {
-    super('VOLUME');
     // hack due to arduino stupidity kenny
     this.level = Math.min(level / 127.0);
   }
 }
 
-export class WaveformChange extends SynthControlMessage {
+export class WaveformChange implements SynthControlMessage {
   public waveForm: string;
   constructor(public rawValue: number) {
-    super('WAVEFORM');
     switch (rawValue) {
       case 0:
         this.waveForm = 'sawtooth';
