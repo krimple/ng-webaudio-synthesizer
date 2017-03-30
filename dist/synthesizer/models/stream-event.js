@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var StreamEvent = (function () {
     function StreamEvent(payload, timeOffset) {
         this.payload = payload;
@@ -5,5 +7,5 @@ var StreamEvent = (function () {
     }
     return StreamEvent;
 }());
-export { StreamEvent };
+exports.StreamEvent = StreamEvent;
 //# sourceMappingURL=stream-event.js.map

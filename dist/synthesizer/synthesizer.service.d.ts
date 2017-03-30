@@ -9,6 +9,7 @@ export declare class SynthesizerService {
     private audioOutput;
     private midiInput;
     private midiNote;
+    private drumMachine;
     constructor(http: Http, zone: NgZone);
     sendNote(note: number | string, duration?: number): void;
     triggerSample(sample: string): void;

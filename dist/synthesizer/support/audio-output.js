@@ -1,4 +1,6 @@
-import { VolumeChange } from '../models';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var models_1 = require("../models");
 var AudioOutput = (function () {
     function AudioOutput(synthStream$, audioContext) {
         this.messageSubscription = null;
@@ -17,7 +19,7 @@ var AudioOutput = (function () {
         if (!this.messageSubscription) {
             // in this service we only care about the volume level
             this.messageSubscription = this.synthStream$.subscribe(function (message) {
-                if (message instanceof VolumeChange) {
+                if (message instanceof models_1.VolumeChange) {
                     _this.setVolume(message.level);
                 }
             });
@@ -42,5 +44,5 @@ var AudioOutput = (function () {
     };
     return AudioOutput;
 }());
-export { AudioOutput };
+exports.AudioOutput = AudioOutput;
 //# sourceMappingURL=audio-output.js.map

@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var ToneSettings = (function () {
     function ToneSettings(attack, sustain, decay, waveform, volume) {
         if (attack === void 0) { attack = 0; }
@@ -11,5 +13,5 @@ var ToneSettings = (function () {
     }
     return ToneSettings;
 }());
-export { ToneSettings };
+exports.ToneSettings = ToneSettings;
 //# sourceMappingURL=tone-settings.js.map

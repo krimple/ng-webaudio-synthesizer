@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Sample = (function () {
     function Sample(fileName) {
         this.fileName = fileName;
@@ -5,5 +7,5 @@ var Sample = (function () {
     }
     return Sample;
 }());
-export { Sample };
+exports.Sample = Sample;
 //# sourceMappingURL=sample.js.map

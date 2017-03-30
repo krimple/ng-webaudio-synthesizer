@@ -1,4 +1,4 @@
-import { Subject } from "rxjs";
+import { Subject } from 'rxjs';
 export class Sample {
   public arrayBuffer: ArrayBuffer;
   public audioBuffer: AudioBuffer;

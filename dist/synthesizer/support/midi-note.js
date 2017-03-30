@@ -1,5 +1,7 @@
-import { Subject } from 'rxjs';
-import { SynthNoteOff, SynthNoteOn, WaveformChange } from '../models/synth-note-message';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var rxjs_1 = require("rxjs");
+var synth_note_message_1 = require("../models/synth-note-message");
 var MidiNote = (function () {
     function MidiNote(synthStream$, audioContext, audioBus) {
         this.synthStream$ = synthStream$;
@@ -112,12 +114,12 @@ var MidiNote = (function () {
     }
     return MidiNote;
 }());
-export { MidiNote };
-export var NoteState;
+exports.MidiNote = MidiNote;
+var NoteState;
 (function (NoteState) {
     NoteState[NoteState["PLAYING"] = 0] = "PLAYING";
     NoteState[NoteState["STOPPED"] = 1] = "STOPPED";
-})(NoteState || (NoteState = {}));
+})(NoteState = exports.NoteState || (exports.NoteState = {}));
 var Note = (function () {
     function Note(noteValues, frequency, synthStream$, audioContext, audioBus) {
         var _this = this;
@@ -126,7 +128,7 @@ var Note = (function () {
         this.synthStream$ = synthStream$;
         this.audioContext = audioContext;
         this.audioBus = audioBus;
-        this.stopWatcher$ = new Subject();
+        this.stopWatcher$ = new rxjs_1.Subject();
         this.subscriptions = [];
         this.state = NoteState.STOPPED;
         this.waveform = 'sine';
@@ -145,7 +147,7 @@ var Note = (function () {
         this.gainNode.connect(audioBus);
         this.subscriptions.push(synthStream$
             .filter(function (message) {
-            return message instanceof SynthNoteOn &&
+            return message instanceof synth_note_message_1.SynthNoteOn &&
                 message.note === _this.midiNoteNumber ||
                 _this.noteValues.indexOf((message.note)) > -1;
         })
@@ -154,7 +156,7 @@ var Note = (function () {
             _this.noteOn();
         }));
         this.subscriptions.push(synthStream$
-            .filter(function (message) { return message instanceof WaveformChange; })
+            .filter(function (message) { return message instanceof synth_note_message_1.WaveformChange; })
             .subscribe(function (message) {
             _this.waveform = message.waveForm;
         }));
@@ -166,7 +168,7 @@ var Note = (function () {
             new ToneWorker(_this.audioContext, _this.frequency, _this.waveform, now, _this.volume, _this.attack, _this.sustain, _this.decay, _this.audioBus, _this.stopWatcher$);
             // subscribe to note off and stop oscillation
             _this.synthStream$.filter(function (message) {
-                return message instanceof SynthNoteOff &&
+                return message instanceof synth_note_message_1.SynthNoteOff &&
                     message.note === _this.midiNoteNumber ||
                     _this.noteValues.indexOf((message.note)) > -1;
             })
@@ -178,8 +180,8 @@ var Note = (function () {
     };
     return Note;
 }());
-export { Note };
 Note.midiNoteNumberCtr = 0;
+exports.Note = Note;
 var ToneWorker = (function () {
     function ToneWorker(context, frequency, waveform, startTime, volume, attack, sustain, decay, outputBus, stopWatcher$) {
         this.stopWatcher$ = stopWatcher$;
