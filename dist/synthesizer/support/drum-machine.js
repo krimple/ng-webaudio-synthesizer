@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var synth_note_message_1 = require("../models/synth-note-message");
-var sample_1 = require("../models/sample");
-var http_1 = require("@angular/http");
+import { TriggerSample } from '../models/synth-note-message';
+import { Sample } from '../models/sample';
+import { BaseRequestOptions, ResponseContentType } from '@angular/http';
 /**
  * Note, this helper class is NOT dependency injected. I had trouble with the factory
  * when trying to set up ngc to export the library for another Angular project to use,
@@ -19,18 +17,18 @@ var DrumMachine = (function () {
     DrumMachine.prototype.begin = function () {
         var self = this;
         this.samples = {
-            bass: new sample_1.Sample('assets/drums/bass-thud.wav'),
-            hihat: new sample_1.Sample('assets/drums/hi-hat-closed.wav'),
-            hihatopen: new sample_1.Sample('assets/drums/hi-hat-open.wav'),
-            snare: new sample_1.Sample('assets/drums/short-snare.wav'),
-            flam: new sample_1.Sample('assets/drums/snare-flam.wav'),
-            rimshot: new sample_1.Sample('assets/drums/snare-rimshot.wav'),
-            htrimshot: new sample_1.Sample('assets/drums/hi-tom-rimshot.wav'),
-            tom1: new sample_1.Sample('assets/drums/hi-tom-normal.wav'),
-            tom2: new sample_1.Sample('assets/drums/low-tom.wav'),
-            crash: new sample_1.Sample('assets/drums/crash-trash.wav'),
-            ride: new sample_1.Sample('assets/drums/ride-standard.wav'),
-            ping: new sample_1.Sample('assets/drums/ride-ping.wav')
+            bass: new Sample('assets/drums/bass-thud.wav'),
+            hihat: new Sample('assets/drums/hi-hat-closed.wav'),
+            hihatopen: new Sample('assets/drums/hi-hat-open.wav'),
+            snare: new Sample('assets/drums/short-snare.wav'),
+            flam: new Sample('assets/drums/snare-flam.wav'),
+            rimshot: new Sample('assets/drums/snare-rimshot.wav'),
+            htrimshot: new Sample('assets/drums/hi-tom-rimshot.wav'),
+            tom1: new Sample('assets/drums/hi-tom-normal.wav'),
+            tom2: new Sample('assets/drums/low-tom.wav'),
+            crash: new Sample('assets/drums/crash-trash.wav'),
+            ride: new Sample('assets/drums/ride-standard.wav'),
+            ping: new Sample('assets/drums/ride-ping.wav')
         };
         self.loadSamples()
             .then(function () {
@@ -67,8 +65,8 @@ var DrumMachine = (function () {
     DrumMachine.prototype.loadSample = function (sample) {
         var _this = this;
         var self = this;
-        var options = new http_1.BaseRequestOptions();
-        options.responseType = http_1.ResponseContentType.ArrayBuffer;
+        var options = new BaseRequestOptions();
+        options.responseType = ResponseContentType.ArrayBuffer;
         return new Promise(function (resolve, reject) {
             _this.http.get(sample.fileName, options)
                 .map(function (response) {
@@ -93,7 +91,7 @@ var DrumMachine = (function () {
         // now sip please, get what you want and play it!
         self.synthStream$
             .filter(function (synthMessage) {
-            return synthMessage instanceof synth_note_message_1.TriggerSample;
+            return synthMessage instanceof TriggerSample;
         })
             .subscribe(function (message) {
             var instrument = message.instrument;
@@ -116,5 +114,5 @@ var DrumMachine = (function () {
     };
     return DrumMachine;
 }());
-exports.DrumMachine = DrumMachine;
+export { DrumMachine };
 //# sourceMappingURL=drum-machine.js.map

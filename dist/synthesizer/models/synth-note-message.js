@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,20 +8,19 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
 var SynthMessage = (function () {
     function SynthMessage() {
     }
     return SynthMessage;
 }());
-exports.SynthMessage = SynthMessage;
+export { SynthMessage };
 var SynthNoteMessage = (function () {
     function SynthNoteMessage(note) {
         this.note = note;
     }
     return SynthNoteMessage;
 }());
-exports.SynthNoteMessage = SynthNoteMessage;
+export { SynthNoteMessage };
 var SynthNoteOn = (function (_super) {
     __extends(SynthNoteOn, _super);
     function SynthNoteOn() {
@@ -30,7 +28,7 @@ var SynthNoteOn = (function (_super) {
     }
     return SynthNoteOn;
 }(SynthNoteMessage));
-exports.SynthNoteOn = SynthNoteOn;
+export { SynthNoteOn };
 var SynthNoteOff = (function (_super) {
     __extends(SynthNoteOff, _super);
     function SynthNoteOff() {
@@ -38,7 +36,7 @@ var SynthNoteOff = (function (_super) {
     }
     return SynthNoteOff;
 }(SynthNoteMessage));
-exports.SynthNoteOff = SynthNoteOff;
+export { SynthNoteOff };
 var TriggerSample = (function () {
     function TriggerSample(instrument, velocity) {
         this.instrument = instrument;
@@ -46,19 +44,19 @@ var TriggerSample = (function () {
     }
     return TriggerSample;
 }());
-exports.TriggerSample = TriggerSample;
+export { TriggerSample };
 var ClockTick = (function () {
     function ClockTick() {
     }
     return ClockTick;
 }());
-exports.ClockTick = ClockTick;
+export { ClockTick };
 var SynthControlMessage = (function () {
     function SynthControlMessage() {
     }
     return SynthControlMessage;
 }());
-exports.SynthControlMessage = SynthControlMessage;
+export { SynthControlMessage };
 var VolumeChange = (function () {
     function VolumeChange(level) {
         // hack due to arduino stupidity kenny
@@ -66,7 +64,7 @@ var VolumeChange = (function () {
     }
     return VolumeChange;
 }());
-exports.VolumeChange = VolumeChange;
+export { VolumeChange };
 var WaveformChange = (function () {
     function WaveformChange(rawValue) {
         this.rawValue = rawValue;
@@ -89,5 +87,5 @@ var WaveformChange = (function () {
     }
     return WaveformChange;
 }());
-exports.WaveformChange = WaveformChange;
+export { WaveformChange };
 //# sourceMappingURL=synth-note-message.js.map

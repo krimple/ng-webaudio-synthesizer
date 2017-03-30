@@ -1,11 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var synth_note_message_1 = require("../models/synth-note-message");
-var MidiServiceStates;
+import { SynthNoteOff, SynthNoteOn, TriggerSample, VolumeChange, WaveformChange } from '../models/synth-note-message';
+export var MidiServiceStates;
 (function (MidiServiceStates) {
     MidiServiceStates[MidiServiceStates["ACTIVE"] = 0] = "ACTIVE";
     MidiServiceStates[MidiServiceStates["INACTIVE"] = 1] = "INACTIVE";
-})(MidiServiceStates = exports.MidiServiceStates || (exports.MidiServiceStates = {}));
+})(MidiServiceStates || (MidiServiceStates = {}));
 var MidiInput = (function () {
     function MidiInput(http, synthStream$, zone) {
         this.http = http;
@@ -118,27 +116,27 @@ var MidiInput = (function () {
         console.log("recieved: " + midiChannelMessage.data[0] + ": " + midiChannelMessage.data[1] + ": " + midiChannelMessage.data[2]);
         switch (midiChannelMessage.data[0]) {
             case 144:
-                this.synthStream$.next(new synth_note_message_1.SynthNoteOn(midiChannelMessage.data[1]));
+                this.synthStream$.next(new SynthNoteOn(midiChannelMessage.data[1]));
                 break;
             case 128:
-                this.synthStream$.next(new synth_note_message_1.SynthNoteOff(midiChannelMessage.data[1]));
+                this.synthStream$.next(new SynthNoteOff(midiChannelMessage.data[1]));
                 break;
             case 176:
                 // first pot on synth
                 if (midiChannelMessage.data[1] === 7) {
-                    this.synthStream$.next(new synth_note_message_1.VolumeChange(midiChannelMessage.data[2]));
+                    this.synthStream$.next(new VolumeChange(midiChannelMessage.data[2]));
                 }
                 break;
             case 137:
                 // buttons on drum pad on synth
                 if (midiChannelMessage.data[1] === 36) {
-                    this.synthStream$.next(new synth_note_message_1.WaveformChange(0));
+                    this.synthStream$.next(new WaveformChange(0));
                 }
                 else if (midiChannelMessage.data[1] === 37) {
-                    this.synthStream$.next(new synth_note_message_1.WaveformChange(1));
+                    this.synthStream$.next(new WaveformChange(1));
                 }
                 else if (midiChannelMessage.data[1] === 38) {
-                    this.synthStream$.next(new synth_note_message_1.WaveformChange(2));
+                    this.synthStream$.next(new WaveformChange(2));
                 }
                 break;
             default:
@@ -190,9 +188,9 @@ var MidiInput = (function () {
         }
     };
     MidiInput.prototype.triggerSample = function (sample, velocity) {
-        this.synthStream$.next(new synth_note_message_1.TriggerSample(sample, velocity));
+        this.synthStream$.next(new TriggerSample(sample, velocity));
     };
     return MidiInput;
 }());
-exports.MidiInput = MidiInput;
+export { MidiInput };
 //# sourceMappingURL=midi-input.js.map

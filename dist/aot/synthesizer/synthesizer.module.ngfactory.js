@@ -4,7 +4,6 @@
  * @suppress {suspiciousCode,uselessCode,missingProperties}
  */
 /* tslint:disable */
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -15,11 +14,10 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-var import0 = require("@angular/core");
-var import1 = require("../../synthesizer/synthesizer.module");
-var import2 = require("@angular/http");
-var import3 = require("../../synthesizer/synthesizer.service");
+import * as import0 from '@angular/core';
+import * as import1 from '../../synthesizer/synthesizer.module';
+import * as import2 from '@angular/http';
+import * as import3 from '../../synthesizer/synthesizer.service';
 var SynthesizerModuleInjector = (function (_super) {
     __extends(SynthesizerModuleInjector, _super);
     function SynthesizerModuleInjector(parent) {
@@ -134,6 +132,5 @@ var SynthesizerModuleInjector = (function (_super) {
     };
     return SynthesizerModuleInjector;
 }(import0.ɵNgModuleInjector));
-exports.SynthesizerModuleNgFactory = new import0.NgModuleFactory(SynthesizerModuleInjector, import1.SynthesizerModule);
-//# sourceMappingURL=data:application/json;base64,eyJmaWxlIjoiQzovVXNlcnMva2VucmkvcHJvamVjdHMvbmctd2ViYXVkaW8tc3ludGhlc2l6ZXIvc3JjL3N5bnRoZXNpemVyL3N5bnRoZXNpemVyLm1vZHVsZS5uZ2ZhY3RvcnkudHMiLCJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyJuZzovLy9DOi9Vc2Vycy9rZW5yaS9wcm9qZWN0cy9uZy13ZWJhdWRpby1zeW50aGVzaXplci9zcmMvc3ludGhlc2l6ZXIvc3ludGhlc2l6ZXIubW9kdWxlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIiAiXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyJ9
+export var SynthesizerModuleNgFactory = new import0.NgModuleFactory(SynthesizerModuleInjector, import1.SynthesizerModule);
 //# sourceMappingURL=synthesizer.module.ngfactory.js.map
