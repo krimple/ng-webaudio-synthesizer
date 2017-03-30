@@ -11,16 +11,16 @@ export declare enum PipelineServiceEvents {
     DISCONNECTED = 1,
 }
 export declare class PipelineService {
+    private audioContext;
+    private synthStream$;
     private midiNoteService;
     private midiInputService;
     private drumMachineInputService;
     private noteInputService;
     private audioOutputService;
     private drumPCMTriggeringService;
-    private audioContext;
-    private synthStream$;
     readonly serviceEvents$: Subject<PipelineServiceEvents>;
-    constructor(midiNoteService: MidiNoteService, midiInputService: MidiInputService, drumMachineInputService: DrumMachineInputService, noteInputService: NoteInputService, audioOutputService: AudioOutputService, drumPCMTriggeringService: DrumPCMTriggeringService);
+    constructor(audioContext: any, synthStream$: Subject<SynthMessage>, midiNoteService: MidiNoteService, midiInputService: MidiInputService, drumMachineInputService: DrumMachineInputService, noteInputService: NoteInputService, audioOutputService: AudioOutputService, drumPCMTriggeringService: DrumPCMTriggeringService);
     sendSynthMessage(message: SynthMessage): void;
     begin(): void;
     end(): void;

@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,16 +8,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable } from '@angular/core';
-import { StreamEvent } from '../../../models';
-import { PipelineService } from '../pipeline.service';
-import { SynthStreamWrapper } from '../../synth-stream-wrapper';
-export var SequencerStates;
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var models_1 = require("../../../models");
+var pipeline_service_1 = require("../pipeline.service");
+var synth_stream_wrapper_1 = require("../../synth-stream-wrapper");
+var SequencerStates;
 (function (SequencerStates) {
     SequencerStates[SequencerStates["STOPPED"] = 0] = "STOPPED";
     SequencerStates[SequencerStates["RECORDING"] = 1] = "RECORDING";
     SequencerStates[SequencerStates["PLAYING"] = 2] = "PLAYING";
-})(SequencerStates || (SequencerStates = {}));
+})(SequencerStates = exports.SequencerStates || (exports.SequencerStates = {}));
 ;
 var SequencerService = (function () {
     function SequencerService(synthStreamWrapper, pipelineService) {
@@ -43,7 +45,7 @@ var SequencerService = (function () {
         // record!
         var startTime = Date.now();
         this.subscription = this.synthStreamWrapper.synthStream$.subscribe(function (eventPayload) {
-            _this.streamBuffer.push(new StreamEvent(eventPayload, Date.now() - startTime));
+            _this.streamBuffer.push(new models_1.StreamEvent(eventPayload, Date.now() - startTime));
         });
     };
     SequencerService.prototype.stop = function () {
@@ -107,9 +109,9 @@ var SequencerService = (function () {
     return SequencerService;
 }());
 SequencerService = __decorate([
-    Injectable(),
-    __metadata("design:paramtypes", [SynthStreamWrapper,
-        PipelineService])
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [synth_stream_wrapper_1.SynthStreamWrapper,
+        pipeline_service_1.PipelineService])
 ], SequencerService);
-export { SequencerService };
+exports.SequencerService = SequencerService;
 //# sourceMappingURL=sequencer.service.js.map

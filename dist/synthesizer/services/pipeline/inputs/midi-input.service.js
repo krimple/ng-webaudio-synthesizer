@@ -1,3 +1,4 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -7,14 +8,15 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { Injectable, NgZone } from '@angular/core';
-import { SynthNoteOff, SynthNoteOn, VolumeChange, WaveformChange, TriggerSample } from '../../../models';
-import { Http } from '@angular/http';
-export var MidiServiceStates;
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = require("@angular/core");
+var models_1 = require("../../../models");
+var http_1 = require("@angular/http");
+var MidiServiceStates;
 (function (MidiServiceStates) {
     MidiServiceStates[MidiServiceStates["ACTIVE"] = 0] = "ACTIVE";
     MidiServiceStates[MidiServiceStates["INACTIVE"] = 1] = "INACTIVE";
-})(MidiServiceStates || (MidiServiceStates = {}));
+})(MidiServiceStates = exports.MidiServiceStates || (exports.MidiServiceStates = {}));
 var MidiInputService = (function () {
     function MidiInputService(zone, http) {
         this.zone = zone;
@@ -135,27 +137,27 @@ var MidiInputService = (function () {
         console.log("recieved: " + midiChannelMessage.data[0] + ": " + midiChannelMessage.data[1] + ": " + midiChannelMessage.data[2]);
         switch (midiChannelMessage.data[0]) {
             case 144:
-                this.synthStream$.next(new SynthNoteOn(midiChannelMessage.data[1]));
+                this.synthStream$.next(new models_1.SynthNoteOn(midiChannelMessage.data[1]));
                 break;
             case 128:
-                this.synthStream$.next(new SynthNoteOff(midiChannelMessage.data[1]));
+                this.synthStream$.next(new models_1.SynthNoteOff(midiChannelMessage.data[1]));
                 break;
             case 176:
                 // first pot on synth
                 if (midiChannelMessage.data[1] === 7) {
-                    this.synthStream$.next(new VolumeChange(midiChannelMessage.data[2]));
+                    this.synthStream$.next(new models_1.VolumeChange(midiChannelMessage.data[2]));
                 }
                 break;
             case 137:
                 // buttons on drum pad on synth
                 if (midiChannelMessage.data[1] === 36) {
-                    this.synthStream$.next(new WaveformChange(0));
+                    this.synthStream$.next(new models_1.WaveformChange(0));
                 }
                 else if (midiChannelMessage.data[1] === 37) {
-                    this.synthStream$.next(new WaveformChange(1));
+                    this.synthStream$.next(new models_1.WaveformChange(1));
                 }
                 else if (midiChannelMessage.data[1] === 38) {
-                    this.synthStream$.next(new WaveformChange(2));
+                    this.synthStream$.next(new models_1.WaveformChange(2));
                 }
                 break;
             default:
@@ -209,14 +211,14 @@ var MidiInputService = (function () {
     MidiInputService.prototype.triggerSample = function (name, velocity) {
         var _this = this;
         this.zone.run(function () {
-            _this.synthStream$.next(new TriggerSample(name, velocity));
+            _this.synthStream$.next(new models_1.TriggerSample(name, velocity));
         });
     };
     return MidiInputService;
 }());
 MidiInputService = __decorate([
-    Injectable(),
-    __metadata("design:paramtypes", [NgZone, Http])
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [core_1.NgZone, http_1.Http])
 ], MidiInputService);
-export { MidiInputService };
+exports.MidiInputService = MidiInputService;
 //# sourceMappingURL=midi-input.service.js.map

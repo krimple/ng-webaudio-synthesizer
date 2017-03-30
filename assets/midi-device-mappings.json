@@ -72,4 +72,9 @@
     "key": "id",
     "value": "0C2F7210E6038867BE36D163C7D8C2457143C8FA73EC54BD8F32417669F0B2C6",
     "type": "percussion"
+  },
+  {
+    "key": "name",
+    "value": "MidiKey",
+    "type": "midi"
   }]
