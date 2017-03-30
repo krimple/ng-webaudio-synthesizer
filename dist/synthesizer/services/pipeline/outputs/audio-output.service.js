@@ -1,24 +1,29 @@
+"use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-import { VolumeChange } from '../../../models';
-import { Injectable } from '@angular/core';
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var models_1 = require("../../../models");
+var core_1 = require("@angular/core");
+var Subject_1 = require("rxjs/Subject");
 var AudioOutputService = (function () {
-    function AudioOutputService() {
-        this.messageSubscription = null;
-    }
-    AudioOutputService.prototype.setup = function (synthStream$, audioContext) {
+    function AudioOutputService(synthStream$, audioContext) {
         this.synthStream$ = synthStream$;
+        this.audioContext = audioContext;
+        this.messageSubscription = null;
         // wire up audio
         this.mainMixOutput = audioContext.destination;
         this.mainMixFinalGain = audioContext.createGain();
         this.mainMixCompressor = audioContext.createDynamicsCompressor();
         this.mainMixFinalGain.connect(this.mainMixOutput);
         this.mainMixCompressor.connect(this.mainMixFinalGain);
-    };
+    }
     AudioOutputService.prototype.begin = function () {
         var _this = this;
         // set the max value of the compressor
@@ -26,7 +31,7 @@ var AudioOutputService = (function () {
         if (!this.messageSubscription) {
             // in this service we only care about the volume level
             this.messageSubscription = this.synthStream$.subscribe(function (message) {
-                if (message instanceof VolumeChange) {
+                if (message instanceof models_1.VolumeChange) {
                     _this.mainMixFinalGain.gain.value = message.level;
                 }
             });
@@ -52,7 +57,8 @@ var AudioOutputService = (function () {
     return AudioOutputService;
 }());
 AudioOutputService = __decorate([
-    Injectable()
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [Subject_1.Subject, Object])
 ], AudioOutputService);
-export { AudioOutputService };
+exports.AudioOutputService = AudioOutputService;
 //# sourceMappingURL=audio-output.service.js.map

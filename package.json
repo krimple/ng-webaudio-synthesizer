@@ -1,13 +1,12 @@
 {
   "name": "ng-webaudio-synthesizer",
   "module": "index.js",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "A web synthesizer for Angular (4+), based on RxJS",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
     "compile": "rimraf dist && tsc -p ./src/tsconfig.json",
-    "preinstall": "npm run ngc",
     "ngc": "./node_modules/.bin/ngc -p src/tsconfig-aot.json",
     "build": "tsc -p tsconfig.json",
     "watch": "tsc --watch -p src/tsconfig.json",

@@ -9,15 +9,7 @@
 import * as import0 from '@angular/core';
 import * as import1 from '../../synthesizer/synthesizer.module';
 import * as import2 from '@angular/http';
-import * as import3 from '../../synthesizer/services/pipeline/synthesis/midi-note.service';
-import * as import4 from '../../synthesizer/services/pipeline/inputs/midi-input.service';
-import * as import5 from '../../synthesizer/services/pipeline/inputs/drum-machine-input.service';
-import * as import6 from '../../synthesizer/services/pipeline/inputs/note-input.service';
-import * as import7 from '../../synthesizer/services/pipeline/outputs/audio-output.service';
-import * as import8 from '../../synthesizer/services/pipeline/synthesis/drum-pcm-triggering.service';
-import * as import9 from '../../synthesizer/services/pipeline/pipeline.service';
-import * as import10 from '../../synthesizer/services/pipeline/processors/sequencer.service';
-import * as import11 from '../../synthesizer/services/synth-stream-wrapper';
+import * as import3 from '../../synthesizer/synthesizer.service';
 class SynthesizerModuleInjector extends import0.ɵNgModuleInjector<import1.SynthesizerModule> {
   _HttpModule_0:import2.HttpModule;
   _SynthesizerModule_1:import1.SynthesizerModule;
@@ -27,14 +19,7 @@ class SynthesizerModuleInjector extends import0.ɵNgModuleInjector<import1.Synth
   __XHRBackend_5:import2.XHRBackend;
   __RequestOptions_6:import2.BaseRequestOptions;
   __Http_7:any;
-  __MidiNoteService_8:import3.MidiNoteService;
-  __MidiInputService_9:import4.MidiInputService;
-  __DrumMachineInputService_10:import5.DrumMachineInputService;
-  __NoteInputService_11:import6.NoteInputService;
-  __AudioOutputService_12:import7.AudioOutputService;
-  __DrumPCMTriggeringService_13:import8.DrumPCMTriggeringService;
-  __PipelineService_14:import9.PipelineService;
-  __SequencerService_15:import10.SequencerService;
+  __SynthesizerService_8:import3.SynthesizerService;
   constructor(parent:import0.Injector) {
     super(parent,([] as any[]),([] as any[]));
   }
@@ -62,37 +47,9 @@ class SynthesizerModuleInjector extends import0.ɵNgModuleInjector<import1.Synth
     if ((this.__Http_7 == null)) { (this.__Http_7 = import2.ɵc(this._XHRBackend_5,this._RequestOptions_6)); }
     return this.__Http_7;
   }
-  get _MidiNoteService_8():import3.MidiNoteService {
-    if ((this.__MidiNoteService_8 == null)) { (this.__MidiNoteService_8 = new import3.MidiNoteService()); }
-    return this.__MidiNoteService_8;
-  }
-  get _MidiInputService_9():import4.MidiInputService {
-    if ((this.__MidiInputService_9 == null)) { (this.__MidiInputService_9 = new import4.MidiInputService(this.parent.get(import0.NgZone),this._Http_7)); }
-    return this.__MidiInputService_9;
-  }
-  get _DrumMachineInputService_10():import5.DrumMachineInputService {
-    if ((this.__DrumMachineInputService_10 == null)) { (this.__DrumMachineInputService_10 = new import5.DrumMachineInputService()); }
-    return this.__DrumMachineInputService_10;
-  }
-  get _NoteInputService_11():import6.NoteInputService {
-    if ((this.__NoteInputService_11 == null)) { (this.__NoteInputService_11 = new import6.NoteInputService()); }
-    return this.__NoteInputService_11;
-  }
-  get _AudioOutputService_12():import7.AudioOutputService {
-    if ((this.__AudioOutputService_12 == null)) { (this.__AudioOutputService_12 = new import7.AudioOutputService()); }
-    return this.__AudioOutputService_12;
-  }
-  get _DrumPCMTriggeringService_13():import8.DrumPCMTriggeringService {
-    if ((this.__DrumPCMTriggeringService_13 == null)) { (this.__DrumPCMTriggeringService_13 = new import8.DrumPCMTriggeringService(this._Http_7)); }
-    return this.__DrumPCMTriggeringService_13;
-  }
-  get _PipelineService_14():import9.PipelineService {
-    if ((this.__PipelineService_14 == null)) { (this.__PipelineService_14 = new import9.PipelineService(this._MidiNoteService_8,this._MidiInputService_9,this._DrumMachineInputService_10,this._NoteInputService_11,this._AudioOutputService_12,this._DrumPCMTriggeringService_13)); }
-    return this.__PipelineService_14;
-  }
-  get _SequencerService_15():import10.SequencerService {
-    if ((this.__SequencerService_15 == null)) { (this.__SequencerService_15 = new import10.SequencerService(this.parent.get(import11.SynthStreamWrapper),this._PipelineService_14)); }
-    return this.__SequencerService_15;
+  get _SynthesizerService_8():import3.SynthesizerService {
+    if ((this.__SynthesizerService_8 == null)) { (this.__SynthesizerService_8 = new import3.SynthesizerService(this._Http_7,this.parent.get(import0.NgZone))); }
+    return this.__SynthesizerService_8;
   }
   createInternal():import1.SynthesizerModule {
     this._HttpModule_0 = new import2.HttpModule();
@@ -108,18 +65,11 @@ class SynthesizerModuleInjector extends import0.ɵNgModuleInjector<import1.Synth
     if ((token === import2.XHRBackend)) { return this._XHRBackend_5; }
     if ((token === import2.RequestOptions)) { return this._RequestOptions_6; }
     if ((token === import2.Http)) { return this._Http_7; }
-    if ((token === import3.MidiNoteService)) { return this._MidiNoteService_8; }
-    if ((token === import4.MidiInputService)) { return this._MidiInputService_9; }
-    if ((token === import5.DrumMachineInputService)) { return this._DrumMachineInputService_10; }
-    if ((token === import6.NoteInputService)) { return this._NoteInputService_11; }
-    if ((token === import7.AudioOutputService)) { return this._AudioOutputService_12; }
-    if ((token === import8.DrumPCMTriggeringService)) { return this._DrumPCMTriggeringService_13; }
-    if ((token === import9.PipelineService)) { return this._PipelineService_14; }
-    if ((token === import10.SequencerService)) { return this._SequencerService_15; }
+    if ((token === import3.SynthesizerService)) { return this._SynthesizerService_8; }
     return notFoundResult;
   }
   destroyInternal():void {
   }
 }
 export const SynthesizerModuleNgFactory:import0.NgModuleFactory<import1.SynthesizerModule> = new import0.NgModuleFactory<any>(SynthesizerModuleInjector,import1.SynthesizerModule);
-//# sourceMappingURL=data:application/json;base64,eyJmaWxlIjoiL1VzZXJzL2tyaW1wbGUvUHJvamVjdHMva2VuLXJpbXBsZS1vcGVuLXNvdXJjZS9uZy13ZWJhdWRpby1zeW50aGVzaXplci9zcmMvc3ludGhlc2l6ZXIvc3ludGhlc2l6ZXIubW9kdWxlLm5nZmFjdG9yeS50cyIsInZlcnNpb24iOjMsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIm5nOi8vL1VzZXJzL2tyaW1wbGUvUHJvamVjdHMva2VuLXJpbXBsZS1vcGVuLXNvdXJjZS9uZy13ZWJhdWRpby1zeW50aGVzaXplci9zcmMvc3ludGhlc2l6ZXIvc3ludGhlc2l6ZXIubW9kdWxlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIiAiXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7In0=
+//# sourceMappingURL=data:application/json;base64,eyJmaWxlIjoiL1VzZXJzL2tyaW1wbGUvUHJvamVjdHMva2VuLXJpbXBsZS1vcGVuLXNvdXJjZS9uZy13ZWJhdWRpby1zeW50aGVzaXplci9zcmMvc3ludGhlc2l6ZXIvc3ludGhlc2l6ZXIubW9kdWxlLm5nZmFjdG9yeS50cyIsInZlcnNpb24iOjMsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIm5nOi8vL1VzZXJzL2tyaW1wbGUvUHJvamVjdHMva2VuLXJpbXBsZS1vcGVuLXNvdXJjZS9uZy13ZWJhdWRpby1zeW50aGVzaXplci9zcmMvc3ludGhlc2l6ZXIvc3ludGhlc2l6ZXIubW9kdWxlLnRzIl0sInNvdXJjZXNDb250ZW50IjpbIiAiXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OyJ9
